@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MAISON — Colecție Exclusivă</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --cream: #f9f5ef; --warm-white: #fdfcfa; --charcoal: #1a1814;
+    --gold: #b8955a; --gold-light: #d4b483; --muted: #8a8478; --border: #e2ddd5;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Montserrat', sans-serif; background: var(--warm-white); color: var(--charcoal); font-weight: 300; overflow-x: hidden; }
+  .page { display: none; }
+  .page.active { display: block; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.5rem 4rem;
+    background: rgba(253,252,250,0.95); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 400; letter-spacing: 0.25em; color: var(--charcoal); text-decoration: none; cursor: pointer; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--charcoal); text-decoration: none; cursor: pointer; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-icons { display: flex; gap: 1.5rem; align-items: center; }
+  .nav-icons button { background: none; border: none; cursor: pointer; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--charcoal); transition: color 0.2s; font-family: 'Montserrat', sans-serif; }
+  .nav-icons button:hover { color: var(--gold); }
+  .cart-count { display: inline-flex; align-items: center; justify-content: center; min-width: 18px; height: 18px; border-radius: 50%; background: var(--gold); color: var(--charcoal); font-size: 0.6rem; font-weight: 500; margin-left: 4px; }
+
+  .btn-primary { display: inline-block; padding: 1rem 2.5rem; background: var(--charcoal); color: var(--warm-white); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; border: none; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: background 0.25s, transform 0.2s; }
+  .btn-primary:hover { background: var(--gold); transform: translateY(-2px); }
+  .btn-outline { display: inline-block; padding: 1rem 2.5rem; background: transparent; color: var(--charcoal); font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--charcoal); cursor: pointer; font-family: 'Montserrat', sans-serif; transition: all 0.25s; }
+  .btn-outline:hover { background: var(--charcoal); color: var(--warm-white); }
+
+  .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; padding-top: 80px; }
+  .hero-left { display: flex; flex-direction: column; justify-content: center; padding: 6rem 4rem 6rem 6rem; background: var(--cream); }
+  .hero-eyebrow { font-size: 0.65rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; }
+  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(3.5rem, 5vw, 5.5rem); font-weight: 300; line-height: 1.1; margin-bottom: 1.5rem; }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-desc { font-size: 0.8rem; line-height: 1.9; color: var(--muted); max-width: 360px; margin-bottom: 3rem; }
+  .hero-right { position: relative; overflow: hidden; }
+  .hero-badge { position: absolute; bottom: 2.5rem; right: 2.5rem; width: 90px; height: 90px; border-radius: 50%; border: 1px solid var(--gold); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--gold-light); font-size: 0.55rem; letter-spacing: 0.15em; text-align: center; line-height: 1.6; text-transform: uppercase; }
+
+  .ticker { background: var(--charcoal); padding: 0.75rem 0; overflow: hidden; }
+  .ticker-inner { display: flex; gap: 4rem; animation: ticker 25s linear infinite; width: max-content; }
+  .ticker span { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold-light); white-space: nowrap; }
+  .ticker-dot { color: var(--gold); }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .section { padding: 6rem 5rem; }
+  .section-header { text-align: center; margin-bottom: 4rem; }
+  .section-label { font-size: 0.6rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 1rem; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.2rem, 3.5vw, 3.5rem); font-weight: 300; line-height: 1.2; }
+  .products-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
+  .product-card { cursor: pointer; transition: transform 0.3s; }
+  .product-card:hover { transform: translateY(-6px); }
+  .product-image { aspect-ratio: 3/4; background: var(--cream); position: relative; overflow: hidden; margin-bottom: 1.25rem; }
+  .product-tag { position: absolute; top: 1rem; left: 1rem; background: var(--charcoal); color: var(--cream); font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.35rem 0.75rem; z-index: 2; }
+  .product-wishlist { position: absolute; top: 1rem; right: 1rem; width: 32px; height: 32px; background: var(--warm-white); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; opacity: 0; transition: opacity 0.2s; z-index: 2; }
+  .product-card:hover .product-wishlist { opacity: 1; }
+  .product-name { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 400; margin-bottom: 0.3rem; }
+  .product-material { font-size: 0.65rem; color: var(--muted); letter-spacing: 0.1em; margin-bottom: 0.75rem; }
+  .product-footer { display: flex; align-items: center; justify-content: space-between; }
+  .product-price { font-size: 0.85rem; font-weight: 400; }
+  .product-price .old-price { font-size: 0.7rem; color: var(--muted); text-decoration: line-through; margin-right: 0.5rem; }
+  .product-add { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); background: none; border: none; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: color 0.2s; }
+  .product-add:hover { color: var(--charcoal); }
+
+  .banner { background: var(--charcoal); padding: 6rem 5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+  .banner-text .eyebrow { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); display: block; margin-bottom: 1.5rem; }
+  .banner-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2.5rem, 4vw, 4rem); font-weight: 300; color: var(--cream); line-height: 1.15; margin-bottom: 1.5rem; }
+  .banner-title em { font-style: italic; color: var(--gold-light); }
+  .banner-desc { font-size: 0.8rem; line-height: 1.9; color: rgba(249,245,239,0.55); margin-bottom: 2.5rem; }
+  .banner-image { aspect-ratio: 1; overflow: hidden; }
+
+  .features { padding: 5rem; display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .feature { padding: 2.5rem; border-right: 1px solid var(--border); text-align: center; }
+  .feature:last-child { border-right: none; }
+  .feature-icon { font-size: 1.5rem; margin-bottom: 1rem; display: block; }
+  .feature-name { font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; margin-bottom: 0.5rem; }
+  .feature-desc { font-size: 0.7rem; color: var(--muted); line-height: 1.7; }
+
+  .newsletter { background: var(--cream); padding: 6rem 5rem; text-align: center; }
+  .newsletter-title { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3vw, 3rem); font-weight: 300; margin-bottom: 1rem; }
+  .newsletter-sub { font-size: 0.75rem; color: var(--muted); margin-bottom: 2.5rem; }
+  .newsletter-form { display: flex; max-width: 480px; margin: 0 auto; border: 1px solid var(--charcoal); }
+  .newsletter-form input { flex: 1; padding: 1rem 1.25rem; background: transparent; border: none; outline: none; font-family: 'Montserrat', sans-serif; font-size: 0.75rem; color: var(--charcoal); }
+  .newsletter-form input::placeholder { color: var(--muted); }
+  .newsletter-form button { padding: 1rem 1.75rem; background: var(--charcoal); color: var(--cream); border: none; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; transition: background 0.2s; }
+  .newsletter-form button:hover { background: var(--gold); }
+
+  footer { background: var(--charcoal); padding: 4rem 5rem 2rem; }
+  .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; margin-bottom: 4rem; }
+  .footer-brand { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; color: var(--cream); letter-spacing: 0.2em; display: block; margin-bottom: 1rem; }
+  .footer-tagline { font-size: 0.7rem; color: rgba(249,245,239,0.4); line-height: 1.8; max-width: 280px; }
+  .footer-col h4 { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold-light); margin-bottom: 1.5rem; }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.75rem; }
+  .footer-col ul li a { font-size: 0.75rem; color: rgba(249,245,239,0.45); text-decoration: none; transition: color 0.2s; }
+  .footer-col ul li a:hover { color: var(--gold-light); }
+  .footer-bottom { border-top: 1px solid rgba(255,255,255,0.08); padding-top: 2rem; display: flex; justify-content: space-between; align-items: center; }
+  .footer-copy { font-size: 0.65rem; color: rgba(249,245,239,0.25); }
+  .footer-social { display: flex; gap: 1.5rem; }
+  .footer-social a { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(249,245,239,0.35); text-decoration: none; transition: color 0.2s; }
+  .footer-social a:hover { color: var(--gold-light); }
+
+  .cart-overlay { position: fixed; inset: 0; background: rgba(26,24,20,0.4); z-index: 200; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .cart-overlay.open { opacity: 1; pointer-events: all; }
+  .cart-sidebar { position: fixed; top: 0; right: 0; bottom: 0; width: 400px; background: var(--warm-white); transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); z-index: 201; display: flex; flex-direction: column; }
+  .cart-sidebar.open { transform: translateX(0); }
+  .cart-header { display: flex; align-items: center; justify-content: space-between; padding: 1.75rem 2rem; border-bottom: 1px solid var(--border); }
+  .cart-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; }
+  .cart-close { background: none; border: none; cursor: pointer; font-size: 1.2rem; color: var(--muted); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; }
+  .cart-close:hover { color: var(--charcoal); }
+  .cart-body { flex: 1; overflow-y: auto; padding: 2rem; }
+  .cart-empty { text-align: center; padding: 4rem 2rem; font-size: 0.8rem; color: var(--muted); line-height: 2; }
+  .cart-empty-icon { font-family: 'Cormorant Garamond', serif; font-size: 4rem; font-style: italic; color: var(--border); display: block; margin-bottom: 1rem; }
+  .cart-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  .cart-item-img { width: 72px; height: 90px; flex-shrink: 0; overflow: hidden; }
+  .cart-item-info { flex: 1; }
+  .cart-item-name { font-family: 'Cormorant Garamond', serif; font-size: 1rem; margin-bottom: 0.25rem; }
+  .cart-item-detail { font-size: 0.65rem; color: var(--muted); margin-bottom: 0.5rem; }
+  .cart-item-price { font-size: 0.8rem; }
+  .cart-item-remove { background: none; border: none; cursor: pointer; font-size: 0.6rem; color: var(--muted); text-transform: uppercase; padding: 0; font-family: 'Montserrat', sans-serif; margin-top: 0.4rem; display: block; transition: color 0.2s; }
+  .cart-item-remove:hover { color: #c0392b; }
+  .cart-footer { padding: 1.5rem 2rem 2rem; border-top: 1px solid var(--border); }
+  .cart-subtotal { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; }
+  .cart-subtotal-label { color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.65rem; }
+  .cart-subtotal-price { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; }
+  .cart-checkout { width: 100%; padding: 1rem; background: var(--charcoal); color: var(--cream); border: none; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; transition: background 0.2s; }
+  .cart-checkout:hover { background: var(--gold); }
+
+  /* PRODUCT PAGE */
+  #page-product { padding-top: 80px; min-height: 100vh; }
+  .product-page-breadcrumb { padding: 1.25rem 5rem; font-size: 0.65rem; color: var(--muted); border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.5rem; }
+  .product-page-breadcrumb span { cursor: pointer; transition: color 0.2s; }
+  .product-page-breadcrumb span:hover { color: var(--gold); }
+  .product-page-breadcrumb .sep { color: var(--border); pointer-events: none; }
+  .product-page-main { display: grid; grid-template-columns: 1fr 1fr; }
+  .product-page-gallery { position: relative; overflow: hidden; background: var(--cream); min-height: 70vh; }
+  .product-page-gallery img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .product-page-tag { position: absolute; top: 2rem; left: 2rem; background: var(--charcoal); color: var(--cream); font-size: 0.55rem; letter-spacing: 0.2em; text-transform: uppercase; padding: 0.4rem 0.9rem; }
+  .product-page-info { padding: 4rem 4.5rem; overflow-y: auto; }
+  .product-page-category { font-size: 0.6rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+  .product-page-name { font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3vw, 3rem); font-weight: 300; line-height: 1.2; margin-bottom: 0.75rem; }
+  .product-page-material { font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; margin-bottom: 1.5rem; }
+  .product-page-rating { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+  .stars { color: var(--gold); font-size: 0.85rem; }
+  .rating-count { font-size: 0.65rem; color: var(--muted); }
+  .product-page-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; margin-bottom: 0.4rem; }
+  .product-page-old-price { font-size: 0.8rem; color: var(--muted); text-decoration: line-through; margin-bottom: 2rem; }
+  .product-page-divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+  .size-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.75rem; display: flex; justify-content: space-between; }
+  .size-guide-link { color: var(--gold); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; font-weight: 300; text-transform: none; letter-spacing: 0.05em; }
+  .size-grid { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1.75rem; }
+  .size-btn { width: 48px; height: 48px; border: 1px solid var(--border); background: transparent; cursor: pointer; font-size: 0.7rem; font-family: 'Montserrat', sans-serif; transition: all 0.15s; color: var(--charcoal); }
+  .size-btn:hover:not(.unavailable) { border-color: var(--charcoal); }
+  .size-btn.selected { background: var(--charcoal); color: var(--cream); border-color: var(--charcoal); }
+  .size-btn.unavailable { opacity: 0.3; cursor: not-allowed; text-decoration: line-through; }
+
+  .color-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+  .color-name-display { font-weight: 300; text-transform: none; letter-spacing: 0.05em; color: var(--muted); }
+  .color-grid { display: flex; gap: 0.75rem; margin-bottom: 1.75rem; }
+  .color-swatch { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all 0.15s; }
+  .color-swatch.selected { outline: 2px solid var(--charcoal); outline-offset: 2px; }
+
+  .product-page-actions { display: flex; gap: 0.75rem; margin-bottom: 1.25rem; }
+  .btn-add-to-cart { flex: 1; padding: 1.1rem; background: var(--charcoal); color: var(--cream); border: none; cursor: pointer; font-family: 'Montserrat', sans-serif; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; transition: background 0.2s; }
+  .btn-add-to-cart:hover { background: var(--gold); }
+  .btn-wishlist-page { width: 52px; height: 52px; border: 1px solid var(--border); background: transparent; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .btn-wishlist-page:hover { border-color: var(--charcoal); }
+  .btn-wishlist-page.active { background: #fce4e4; border-color: #e88; }
+
+  .accordion-item { border-top: 1px solid var(--border); }
+  .accordion-item:last-child { border-bottom: 1px solid var(--border); }
+  .accordion-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 0; cursor: pointer; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; }
+  .accordion-icon { font-size: 1.1rem; color: var(--muted); transition: transform 0.25s; line-height: 1; }
+  .accordion-item.open .accordion-icon { transform: rotate(45deg); }
+  .accordion-body { max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
+  .accordion-item.open .accordion-body { max-height: 600px; }
+  .accordion-content { padding-bottom: 1.25rem; font-size: 0.75rem; color: var(--muted); line-height: 1.9; }
+  .accordion-content ul { padding-left: 1rem; }
+  .accordion-content ul li { margin-bottom: 0.4rem; }
+
+  /* REVIEWS */
+  .reviews-section { padding: 5rem; background: var(--cream); }
+  .reviews-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 3rem; flex-wrap: wrap; gap: 2rem; }
+  .reviews-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; }
+  .reviews-summary { display: flex; align-items: center; gap: 2rem; }
+  .reviews-score { text-align: center; }
+  .reviews-score-big { font-family: 'Cormorant Garamond', serif; font-size: 4rem; font-weight: 300; line-height: 1; }
+  .reviews-score-stars { color: var(--gold); font-size: 1rem; margin: 0.25rem 0; }
+  .reviews-score-count { font-size: 0.65rem; color: var(--muted); }
+  .reviews-bars { min-width: 200px; }
+  .bar-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.4rem; }
+  .bar-label { font-size: 0.65rem; color: var(--muted); min-width: 35px; }
+  .bar-track { flex: 1; height: 4px; background: var(--border); }
+  .bar-fill { height: 100%; background: var(--gold); }
+  .bar-count { font-size: 0.65rem; color: var(--muted); min-width: 20px; text-align: right; }
+  .reviews-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+  .review-card { background: var(--warm-white); padding: 1.75rem; }
+  .review-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem; }
+  .review-author { font-size: 0.8rem; font-weight: 400; }
+  .review-stars { color: var(--gold); font-size: 0.75rem; }
+  .review-date { font-size: 0.65rem; color: var(--muted); margin-bottom: 0.4rem; }
+  .review-size-info { font-size: 0.65rem; color: var(--muted); margin-bottom: 0.75rem; font-style: italic; }
+  .review-text { font-size: 0.78rem; line-height: 1.8; }
+  .review-verified { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.6rem; color: #2e7d32; margin-top: 0.75rem; }
+
+  .related-section { padding: 5rem; }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(26,24,20,0.5); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal-box { background: var(--warm-white); max-width: 560px; width: 90%; padding: 2.5rem; position: relative; }
+  .modal-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; margin-bottom: 1rem; }
+  .modal-close { position: absolute; top: 1.25rem; right: 1.5rem; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--muted); }
+  .size-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-top: 1rem; }
+  .size-table th { font-size: 0.6rem; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.6rem 1rem; background: var(--cream); text-align: left; }
+  .size-table td { padding: 0.7rem 1rem; border-top: 1px solid var(--border); color: var(--muted); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%) translateY(100px); background: var(--charcoal); color: var(--cream); padding: 0.9rem 2rem; font-size: 0.7rem; letter-spacing: 0.1em; z-index: 500; transition: transform 0.3s; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* SHIPPING STRIP */
+  .shipping-strip { font-size: 0.65rem; color: var(--muted); margin-bottom: 1.5rem; letter-spacing: 0.04em; }
+  .shipping-strip span { margin-right: 1rem; }
+
+  @media (max-width: 768px) {
+    nav { padding: 1.25rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { min-height: 60vw; }
+    .hero-left { padding: 3rem 1.5rem; }
+    .section { padding: 4rem 1.5rem; }
+    .products-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+    .banner { grid-template-columns: 1fr; padding: 4rem 1.5rem; }
+    .banner-image { display: none; }
+    .features { grid-template-columns: repeat(2, 1fr); padding: 3rem 1.5rem; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    footer { padding: 3rem 1.5rem 2rem; }
+    .cart-sidebar { width: 100%; }
+    .product-page-breadcrumb { padding: 1rem 1.5rem; }
+    .product-page-main { grid-template-columns: 1fr; }
+    .product-page-gallery { min-height: 60vw; }
+    .product-page-info { padding: 2rem 1.5rem; }
+    .reviews-section, .related-section { padding: 3rem 1.5rem; }
+    .reviews-grid { grid-template-columns: 1fr; }
+    .reviews-summary { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo" onclick="showPage('home')">MAISON</span>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')">Colecție</a></li>
+    <li><a onclick="showPage('home')">Noutăți</a></li>
+    <li><a onclick="showPage('home')">Despre noi</a></li>
+  </ul>
+  <div class="nav-icons">
+    <button onclick="toggleCart()">Coș <span class="cart-count" id="cart-badge">0</span></button>
+  </div>
+</nav>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-left">
+      <span class="hero-eyebrow">Colecția Toamnă — Iarnă 2025</span>
+      <h1 class="hero-title">Eleganță<br>în fiecare<br><em>detaliu</em></h1>
+      <p class="hero-desc">Piese create pentru femeia modernă. Materiale premium, croieli atent lucrate, rafinament care nu cere atenție — ci o inspiră.</p>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="document.getElementById('colectie').scrollIntoView({behavior:'smooth'})">Explorează colecția</button>
+        <button class="btn-outline">Noutăți</button>
+      </div>
+    </div>
+    <div class="hero-right">
+      <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=900&q=85" alt="MAISON" style="width:100%;height:100%;object-fit:cover;display:block;" />
+      <div class="hero-badge"><span>Noua</span><span>Colecție</span><span>2025</span></div>
+    </div>
+  </section>
+
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span>Livrare gratuită peste 500 RON</span><span class="ticker-dot">✦</span>
+      <span>Materiale certificate sustenabil</span><span class="ticker-dot">✦</span>
+      <span>Returnare gratuită în 30 de zile</span><span class="ticker-dot">✦</span>
+      <span>Colecție exclusivă toamnă–iarnă</span><span class="ticker-dot">✦</span>
+      <span>Livrare gratuită peste 500 RON</span><span class="ticker-dot">✦</span>
+      <span>Materiale certificate sustenabil</span><span class="ticker-dot">✦</span>
+      <span>Returnare gratuită în 30 de zile</span><span class="ticker-dot">✦</span>
+      <span>Colecție exclusivă toamnă–iarnă</span><span class="ticker-dot">✦</span>
+    </div>
+  </div>
+
+  <section class="section" id="colectie">
+    <div class="section-header">
+      <span class="section-label">Piesele Sezonului</span>
+      <h2 class="section-title">Colecția Curentă</h2>
+    </div>
+    <div class="products-grid" id="products-grid"></div>
+  </section>
+
+  <section class="banner">
+    <div class="banner-text">
+      <span class="eyebrow">Filozofia noastră</span>
+      <h2 class="banner-title">Hainele care<br>durează <em>o viață</em></h2>
+      <p class="banner-desc">Credem în modă responsabilă — piese create să fie purtate ani întregi, nu o singură sezon.</p>
+      <button class="btn-primary" style="background:var(--gold);">Povestea noastră</button>
+    </div>
+    <div class="banner-image">
+      <img src="https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=700&q=80" alt="Filozofie" style="width:100%;height:100%;object-fit:cover;" />
+    </div>
+  </section>
+
+  <div class="features">
+    <div class="feature"><span class="feature-icon">✦</span><div class="feature-name">Materiale Premium</div><p class="feature-desc">Lână merinos, mătase naturală și bumbac organic.</p></div>
+    <div class="feature"><span class="feature-icon">◈</span><div class="feature-name">Croieli Atente</div><p class="feature-desc">Fiecare piesă ajustată manual pentru o siluetă perfectă.</p></div>
+    <div class="feature"><span class="feature-icon">◇</span><div class="feature-name">Livrare Rapidă</div><p class="feature-desc">Livrare în 1–3 zile, gratuită peste 500 RON.</p></div>
+    <div class="feature"><span class="feature-icon">○</span><div class="feature-name">Returnare Ușoară</div><p class="feature-desc">30 de zile returnare gratuită, fără întrebări.</p></div>
+  </div>
+
+  <section class="newsletter">
+    <h2 class="newsletter-title">Fii primul care află</h2>
+    <p class="newsletter-sub">Abonează-te pentru acces exclusiv la colecții noi și oferte speciale.</p>
+    <div class="newsletter-form">
+      <input type="email" placeholder="Adresa ta de email" />
+      <button type="button">Abonare</button>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-top">
+      <div><span class="footer-brand">MAISON</span><p class="footer-tagline">Rafinament fără compromis. Piese create pentru a dura, a impresiona și a fi purtate cu mândrie.</p></div>
+      <div class="footer-col"><h4>Shop</h4><ul><li><a href="#">Colecție nouă</a></li><li><a href="#">Rochii</a></li><li><a href="#">Sacouri</a></li><li><a href="#">Accesorii</a></li></ul></div>
+      <div class="footer-col"><h4>Informații</h4><ul><li><a href="#">Despre noi</a></li><li><a href="#">Sustenabilitate</a></li><li><a href="#">Ghid de mărimi</a></li></ul></div>
+      <div class="footer-col"><h4>Suport</h4><ul><li><a href="#">Contact</a></li><li><a href="#">Livrare</a></li><li><a href="#">Returnări</a></li><li><a href="#">FAQ</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 MAISON. Toate drepturile rezervate.</span>
+      <div class="footer-social"><a href="#">Instagram</a><a href="#">Pinterest</a><a href="#">Facebook</a></div>
+    </div>
+  </footer>
+</div>
+
+<!-- PRODUCT PAGE -->
+<div id="page-product" class="page">
+  <div class="product-page-breadcrumb">
+    <span onclick="showPage('home')">Acasă</span>
+    <span class="sep">›</span>
+    <span onclick="showPage('home')">Colecție</span>
+    <span class="sep">›</span>
+    <span id="breadcrumb-name" style="color:var(--charcoal);cursor:default;">Produs</span>
+  </div>
+
+  <div class="product-page-main">
+    <div class="product-page-gallery">
+      <img id="pp-img" src="" alt="" />
+      <span class="product-page-tag" id="pp-tag" style="display:none;"></span>
+    </div>
+    <div class="product-page-info">
+      <div class="product-page-category" id="pp-category"></div>
+      <h1 class="product-page-name" id="pp-name"></h1>
+      <div class="product-page-material" id="pp-material"></div>
+      <div class="product-page-rating">
+        <span class="stars" id="pp-stars"></span>
+        <span class="rating-count" id="pp-rating-count"></span>
+      </div>
+      <div class="product-page-price" id="pp-price"></div>
+      <div class="product-page-old-price" id="pp-old-price" style="display:none;"></div>
+      <hr class="product-page-divider">
+
+      <div class="color-label">Culoare: <span class="color-name-display" id="pp-color-name"></span></div>
+      <div class="color-grid" id="pp-colors"></div>
+
+      <div class="size-label">
+        <span>Mărime selectată: <span id="pp-size-display" style="color:var(--gold);font-weight:400;">—</span></span>
+        <span class="size-guide-link" onclick="openSizeGuide()">Ghid de mărimi</span>
+      </div>
+      <div class="size-grid" id="pp-sizes"></div>
+
+      <div class="product-page-actions">
+        <button class="btn-add-to-cart" onclick="addCurrentToCart()">Adaugă în coș</button>
+        <button class="btn-wishlist-page" id="pp-wishlist" onclick="toggleWishlist(this)" title="Favorite">♡</button>
+      </div>
+
+      <div class="shipping-strip">
+        <span>✓ Livrare gratuită</span>
+        <span>✓ Returnare 30 zile</span>
+        <span>✓ Plată securizată</span>
+      </div>
+
+      <div>
+        <div class="accordion-item open">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Descriere</span><span class="accordion-icon">+</span></div>
+          <div class="accordion-body"><div class="accordion-content" id="pp-description"></div></div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Compoziție & Îngrijire</span><span class="accordion-icon">+</span></div>
+          <div class="accordion-body"><div class="accordion-content" id="pp-care"></div></div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Livrare & Returnare</span><span class="accordion-icon">+</span></div>
+          <div class="accordion-body">
+            <div class="accordion-content">
+              <ul>
+                <li>Livrare standard 1–3 zile lucrătoare (gratuită peste 500 RON)</li>
+                <li>Livrare rapidă 24h disponibilă contra cost</li>
+                <li>Returnare gratuită în 30 de zile de la primire</li>
+                <li>Produsul trebuie returnat cu etichete intacte</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REVIEWS -->
+  <section class="reviews-section">
+    <div class="reviews-header">
+      <div>
+        <span class="section-label">Ce spun clienții</span>
+        <div class="reviews-title" id="pp-reviews-title">Recenzii</div>
+      </div>
+      <div class="reviews-summary">
+        <div class="reviews-score">
+          <div class="reviews-score-big" id="pp-score-big">—</div>
+          <div class="reviews-score-stars">★★★★★</div>
+          <div class="reviews-score-count" id="pp-score-count">— recenzii</div>
+        </div>
+        <div class="reviews-bars" id="pp-bars"></div>
+      </div>
+    </div>
+    <div class="reviews-grid" id="pp-reviews-grid"></div>
+  </section>
+
+  <!-- RELATED -->
+  <section class="related-section">
+    <div class="section-header">
+      <span class="section-label">S-ar putea să îți placă</span>
+      <h2 class="section-title">Produse Similare</h2>
+    </div>
+    <div class="products-grid" id="related-grid"></div>
+  </section>
+
+  <footer>
+    <div class="footer-top">
+      <div><span class="footer-brand">MAISON</span><p class="footer-tagline">Rafinament fără compromis.</p></div>
+      <div class="footer-col"><h4>Shop</h4><ul><li><a href="#">Colecție</a></li><li><a href="#">Rochii</a></li><li><a href="#">Sacouri</a></li></ul></div>
+      <div class="footer-col"><h4>Suport</h4><ul><li><a href="#">Contact</a></li><li><a href="#">Livrare</a></li><li><a href="#">Returnări</a></li></ul></div>
+      <div class="footer-col"><h4>Social</h4><ul><li><a href="#">Instagram</a></li><li><a href="#">Pinterest</a></li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <span class="footer-copy">© 2025 MAISON.</span>
+      <div class="footer-social"><a href="#">Instagram</a><a href="#">Pinterest</a></div>
+    </div>
+  </footer>
+</div>
+
+<!-- SIZE MODAL -->
+<div class="modal-overlay" id="size-modal" onclick="closeSizeGuide(event)">
+  <div class="modal-box">
+    <button class="modal-close" onclick="document.getElementById('size-modal').classList.remove('open')">✕</button>
+    <div class="modal-title">Ghid de Mărimi</div>
+    <p style="font-size:0.75rem;color:var(--muted);line-height:1.8;">Măsurătorile sunt în centimetri. Recomandăm măsurarea peste haine ușoare.</p>
+    <table class="size-table">
+      <thead><tr><th>Mărime</th><th>Bust (cm)</th><th>Talie (cm)</th><th>Șolduri (cm)</th></tr></thead>
+      <tbody>
+        <tr><td>XS</td><td>80–84</td><td>62–66</td><td>88–92</td></tr>
+        <tr><td>S</td><td>84–88</td><td>66–70</td><td>92–96</td></tr>
+        <tr><td>M</td><td>88–92</td><td>70–74</td><td>96–100</td></tr>
+        <tr><td>L</td><td>92–96</td><td>74–78</td><td>100–104</td></tr>
+        <tr><td>XL</td><td>96–100</td><td>78–82</td><td>104–108</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- CART -->
+<div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cart-sidebar">
+  <div class="cart-header">
+    <span class="cart-title">Coșul tău</span>
+    <button class="cart-close" onclick="toggleCart()">✕</button>
+  </div>
+  <div class="cart-body">
+    <div class="cart-empty" id="cart-empty">
+      <span class="cart-empty-icon">M</span>
+      Coșul tău este gol.<br>Adaugă piese din colecție.
+    </div>
+    <div id="cart-items"></div>
+  </div>
+  <div class="cart-footer" id="cart-footer" style="display:none;">
+    <div class="cart-subtotal">
+      <span class="cart-subtotal-label">Subtotal</span>
+      <span class="cart-subtotal-price" id="cart-total">0 RON</span>
+    </div>
+    <button class="cart-checkout">Finalizează comanda →</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const products = [
+  { id:1, name:'Palton Camel', material:'Lână Merinos & Cașmir', price:1290, tag:'Bestseller', img:'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=800&q=85', category:'Outerwear', rating:4.9, reviewCount:47, colors:[{name:'Camel',hex:'#c9a96e'},{name:'Negru',hex:'#1a1814'},{name:'Gri Fumuriu',hex:'#8a8478'}], sizes:['XS','S','M','L','XL'], unavailable:['XL'], description:'Paltonul Camel este piesa-cheie a colecției acestui sezon. Croiala suprasizată oferă o siluetă modernă și relaxată, în timp ce amestecul premium de lână merinos și cașmir asigură căldură fără greutate. Finisajele manuale și butoanele din corn natural completează imaginea unui palton cu adevărat excepțional.', care:'<ul><li>80% Lână Merinos, 15% Cașmir, 5% Poliamidă</li><li>Curățare la uscat recomandată</li><li>Nu se stoarce sau centrifugă</li><li>Păstrați pe umeraș în husa originală</li></ul>', reviews:[{author:'Andreea M.',stars:5,date:'12 Oct 2025',size:'Purtat S',text:'Un palton absolut superb. Materialul este delicat, cald și arată exact ca în poze. Am primit nenumărate complimente!',verified:true},{author:'Raluca D.',stars:5,date:'3 Nov 2025',size:'Purtat M',text:'Calitate excepțională. Al treilea produs de la MAISON — nu m-au dezamăgit niciodată. Croiala este impecabilă.',verified:true},{author:'Ioana P.',stars:4,date:'25 Oct 2025',size:'Purtat S',text:'Foarte frumos, exact cum mă așteptam. Singurul minus — livrarea a durat o zi în plus. Produsul în sine este perfect.',verified:true},{author:'Mihaela C.',stars:5,date:'8 Nov 2025',size:'Purtat XS',text:'Am cumpărat ca cadou și mama a fost îndrăgostită la prima vedere. Ambalajul este și el luxos.',verified:false}], barData:[{stars:5,count:38},{stars:4,count:6},{stars:3,count:2},{stars:2,count:1},{stars:1,count:0}] },
+  { id:2, name:'Rochie Midi Albastru', material:'Mătase Naturală', price:890, oldPrice:1100, tag:'Reducere', img:'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&q=85', category:'Rochii', rating:4.7, reviewCount:31, colors:[{name:'Albastru Profund',hex:'#2c4a7c'},{name:'Negru',hex:'#1a1814'},{name:'Crem',hex:'#e8dcc8'}], sizes:['XS','S','M','L'], unavailable:['XS'], description:'Rochia Midi din mătase naturală captează lumina în mod unic, creând un efect vizual elegant la orice oră a zilei. Decolteuul subtil în V și mânecile ușor evazate adaugă feminitate fără a sacrifica eleganța. Perfectă atât pentru ocazii speciale, cât și pentru ținute de zi rafinată.', care:'<ul><li>100% Mătase Naturală (gradul 6A)</li><li>Spălare delicată la 30°C sau curățare la uscat</li><li>Călcat la temperatura minimă, pe dos</li><li>Nu se expune la lumina directă a soarelui</li></ul>', reviews:[{author:'Elena V.',stars:5,date:'20 Sep 2025',size:'Purtat S',text:'Mătasea este somptuoasă. Rochia cade perfect și se mișcă divin. Am purtat-o la o gală și am primit complimente toată seara.',verified:true},{author:'Cristina B.',stars:4,date:'5 Oct 2025',size:'Purtat M',text:'Culoarea este și mai intensă în realitate. Sfat: luați o mărime mai mare dacă sunteți între mărimi.',verified:true},{author:'Diana T.',stars:5,date:'18 Oct 2025',size:'Purtat S',text:'A doua rochie de la MAISON. Calitatea mătăsii este remarcabilă.',verified:true}], barData:[{stars:5,count:22},{stars:4,count:7},{stars:3,count:2},{stars:2,count:0},{stars:1,count:0}] },
+  { id:3, name:'Sacou Structured', material:'Lână Italiană', price:1490, tag:null, img:'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&q=85', category:'Sacouri', rating:4.8, reviewCount:22, colors:[{name:'Negru',hex:'#1a1814'},{name:'Gri Antracit',hex:'#4a4844'},{name:'Bej',hex:'#c9b89a'}], sizes:['XS','S','M','L','XL'], unavailable:[], description:'Sacoul Structured este o interpretare contemporană a clasicului blazer tailored. Umerii ușor structurați și talia marcată creează o siluetă autoritară și feminină în același timp. Lâna italiană cu finish mat conferă un aspect premium imediat recognoscibil.', care:'<ul><li>95% Lână Virgină Italiană, 5% Elastan</li><li>Curățare la uscat obligatorie</li><li>Păstrați pe umeraș pentru a menține forma</li><li>Aerisiți după purtare înainte de depozitare</li></ul>', reviews:[{author:'Laura M.',stars:5,date:'1 Oct 2025',size:'Purtat M',text:'Exact ce îmi doream — un sacou care arată scump fără să fie ostentativ. Construcția interioară este solidă.',verified:true},{author:'Simona G.',stars:5,date:'15 Oct 2025',size:'Purtat S',text:'Poartă-se la birou, la cină, la eveniment. Cel mai versatil articol din garderoba mea.',verified:true}], barData:[{stars:5,count:18},{stars:4,count:3},{stars:3,count:1},{stars:2,count:0},{stars:1,count:0}] },
+  { id:4, name:'Pantaloni Wide-Leg', material:'Bumbac Organic', price:590, tag:'Nou', img:'https://images.unsplash.com/photo-1509631179647-0177331693ae?w=800&q=85', category:'Pantaloni', rating:4.6, reviewCount:18, colors:[{name:'Ecru',hex:'#f0ead8'},{name:'Negru',hex:'#1a1814'},{name:'Caramel',hex:'#b87d4b'}], sizes:['XS','S','M','L','XL'], unavailable:['XS'], description:'Pantalonii Wide-Leg din bumbac organic sunt piesa de bază a unui stil effortless chic. Croiala amplă pornind de la talie și tăietura dreaptă creează un look fluid și sofisticat. Materialul respirabil îi face potriviți pe tot parcursul zilei.', care:'<ul><li>100% Bumbac Organic certificat GOTS</li><li>Spălare la 40°C</li><li>Uscat la uscător la temperaturi joase</li><li>Călcat la temperaturi medii</li></ul>', reviews:[{author:'Oana R.',stars:5,date:'5 Nov 2025',size:'Purtat M',text:'Materialul este fin și nu se șifonează excesiv. Talia elastică face purtarea comodă toată ziua.',verified:true},{author:'Ana C.',stars:4,date:'10 Nov 2025',size:'Purtat S',text:'Frumoși și comozi. Cu tocuri arată impecabil.',verified:false}], barData:[{stars:5,count:12},{stars:4,count:4},{stars:3,count:2},{stars:2,count:0},{stars:1,count:0}] },
+  { id:5, name:'Bluză Romantică', material:'Mătase & Voal', price:450, tag:null, img:'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=800&q=85', category:'Bluze', rating:4.7, reviewCount:25, colors:[{name:'Alb Crem',hex:'#fdfcfa'},{name:'Roz Pudrat',hex:'#f0c8c0'},{name:'Lavandă',hex:'#c8bce8'}], sizes:['XS','S','M','L'], unavailable:[], description:'Bluza Romantică combină rafinamentul mătăsii cu ușurința voalului. Volănele discrete la manșete și gulerul rotund creează un aspect feminin și atemporal. Se poate purta elegantă la eveniment sau casual cu jeanși.', care:'<ul><li>60% Mătase Naturală, 40% Voal din Vâscoză</li><li>Spălare delicată la mână în apă rece</li><li>Nu se stoarce — se presează ușor în prosop</li><li>Călcat pe dos la temperaturi minime</li></ul>', reviews:[{author:'Teodora M.',stars:5,date:'2 Oct 2025',size:'Purtat S',text:'Adorabilă! Materialul este delicat. Am purtat-o la o nuntă și era perfectă.',verified:true},{author:'Bianca L.',stars:4,date:'20 Oct 2025',size:'Purtat M',text:'Frumoasă și ușoară. Trebuie îngrijită cu atenție la spălat, dar merită.',verified:true}], barData:[{stars:5,count:18},{stars:4,count:5},{stars:3,count:2},{stars:2,count:0},{stars:1,count:0}] },
+  { id:6, name:'Trenci Clasic', material:'Bumbac & Poliester', price:1890, tag:'Nou', img:'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&q=85', category:'Outerwear', rating:4.9, reviewCount:15, colors:[{name:'Bej Clasic',hex:'#c9b89a'},{name:'Negru',hex:'#1a1814'}], sizes:['XS','S','M','L','XL'], unavailable:['XS'], description:'Trenciul Clasic este reinterpretarea noastră a unui icon al modei. Croiala dublă, centura reglabilă și epoleții discreți respectă tradiția, în timp ce silhouette-ul modern oferă o contemporaneitate subtilă. Un investment piece care nu va ieși niciodată din modă.', care:'<ul><li>65% Bumbac Egyptian, 35% Poliester Premium</li><li>Curățare la uscat recomandată</li><li>Spălare delicată posibilă la 30°C fără centrifugare</li><li>Îndepărtați centura înainte de curățare</li></ul>', reviews:[{author:'Roxana P.',stars:5,date:'8 Nov 2025',size:'Purtat M',text:'Am căutat trenciul perfect ani de zile. Acesta este. Materialul rezistă la ploaie ușoară, croiala este impecabilă.',verified:true},{author:'Maria V.',stars:5,date:'14 Nov 2025',size:'Purtat S',text:'Calitate remarcabilă. Centura, butoanele, căptușeala — totul este perfect.',verified:true}], barData:[{stars:5,count:13},{stars:4,count:2},{stars:3,count:0},{stars:2,count:0},{stars:1,count:0}] }
+];
+
+let cart = [];
+let currentProduct = null;
+let selectedSize = null;
+
+function showPage(page, productId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  if (page === 'home') {
+    document.getElementById('page-home').classList.add('active');
+  } else if (page === 'product') {
+    document.getElementById('page-product').classList.add('active');
+    loadProduct(productId);
+  }
+  window.scrollTo({top: 0, behavior: 'instant'});
+}
+
+function loadProduct(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  currentProduct = p;
+  selectedSize = null;
+
+  document.getElementById('breadcrumb-name').textContent = p.name;
+  document.getElementById('pp-img').src = p.img;
+  document.getElementById('pp-img').alt = p.name;
+  document.getElementById('pp-category').textContent = p.category;
+  document.getElementById('pp-name').textContent = p.name;
+  document.getElementById('pp-material').textContent = p.material;
+  document.getElementById('pp-price').textContent = p.price.toLocaleString('ro-RO') + ' RON';
+  document.getElementById('pp-size-display').textContent = '—';
+  document.getElementById('pp-wishlist').className = 'btn-wishlist-page';
+  document.getElementById('pp-wishlist').textContent = '♡';
+
+  const oldPriceEl = document.getElementById('pp-old-price');
+  if (p.oldPrice) { oldPriceEl.textContent = p.oldPrice.toLocaleString('ro-RO') + ' RON'; oldPriceEl.style.display = 'block'; }
+  else { oldPriceEl.style.display = 'none'; }
+
+  const tagEl = document.getElementById('pp-tag');
+  if (p.tag) { tagEl.textContent = p.tag; tagEl.style.display = 'block'; }
+  else { tagEl.style.display = 'none'; }
+
+  document.getElementById('pp-stars').textContent = '★'.repeat(Math.round(p.rating)) + '☆'.repeat(5 - Math.round(p.rating));
+  document.getElementById('pp-rating-count').textContent = p.rating + ' · ' + p.reviewCount + ' recenzii';
+  document.getElementById('pp-description').textContent = p.description;
+  document.getElementById('pp-care').innerHTML = p.care;
+
+  // Reset accordion — first open, rest closed
+  document.querySelectorAll('#page-product .accordion-item').forEach((item, i) => {
+    item.classList.toggle('open', i === 0);
+  });
+
+  // Colors
+  document.getElementById('pp-colors').innerHTML = p.colors.map((c, i) => `
+    <div class="color-swatch ${i===0?'selected':''}" style="background:${c.hex};" title="${c.name}" onclick="selectColor(this,'${c.name}')"></div>
+  `).join('');
+  document.getElementById('pp-color-name').textContent = p.colors[0].name;
+
+  // Sizes
+  document.getElementById('pp-sizes').innerHTML = p.sizes.map(s => {
+    const ua = p.unavailable.includes(s);
+    return `<button class="size-btn${ua?' unavailable':''}" ${ua?'disabled':''} onclick="${ua?'':('selectSize(this,\''+s+'\')') }">${s}</button>`;
+  }).join('');
+
+  // Reviews score
+  document.getElementById('pp-reviews-title').textContent = 'Recenzii (' + p.reviewCount + ')';
+  document.getElementById('pp-score-big').textContent = p.rating;
+  document.getElementById('pp-score-count').textContent = p.reviewCount + ' recenzii';
+  const total = p.barData.reduce((s,b) => s+b.count, 0);
+  document.getElementById('pp-bars').innerHTML = p.barData.map(b => `
+    <div class="bar-row">
+      <span class="bar-label">${b.stars}★</span>
+      <div class="bar-track"><div class="bar-fill" style="width:${total?Math.round(b.count/total*100):0}%"></div></div>
+      <span class="bar-count">${b.count}</span>
+    </div>
+  `).join('');
+
+  document.getElementById('pp-reviews-grid').innerHTML = p.reviews.map(r => `
+    <div class="review-card">
+      <div class="review-top"><span class="review-author">${r.author}</span><span class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span></div>
+      <div class="review-date">${r.date}</div>
+      <div class="review-size-info">${r.size}</div>
+      <div class="review-text">${r.text}</div>
+      ${r.verified ? '<div class="review-verified">✓ Cumpărător verificat</div>' : ''}
+    </div>
+  `).join('');
+
+  const related = products.filter(x => x.id !== id).slice(0, 3);
+  document.getElementById('related-grid').innerHTML = related.map(rp => `
+    <div class="product-card" onclick="showPage('product',${rp.id})">
+      <div class="product-image">
+        <img src="${rp.img}" alt="${rp.name}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
+        ${rp.tag ? `<span class="product-tag">${rp.tag}</span>` : ''}
+      </div>
+      <div class="product-name">${rp.name}</div>
+      <div class="product-material">${rp.material}</div>
+      <div class="product-footer">
+        <div class="product-price">${rp.oldPrice?`<span class="old-price">${rp.oldPrice.toLocaleString('ro-RO')} RON</span>`:''}${rp.price.toLocaleString('ro-RO')} RON</div>
+        <button class="product-add" onclick="event.stopPropagation();quickAddToCart(${rp.id})">+ Adaugă</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectSize(btn, size) {
+  document.querySelectorAll('#pp-sizes .size-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedSize = size;
+  document.getElementById('pp-size-display').textContent = size;
+}
+
+function selectColor(el, name) {
+  document.querySelectorAll('#pp-colors .color-swatch').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('pp-color-name').textContent = name;
+}
+
+function toggleWishlist(btn) {
+  if (btn.classList.contains('active')) {
+    btn.classList.remove('active'); btn.textContent = '♡'; showToast('Eliminat din favorite');
+  } else {
+    btn.classList.add('active'); btn.textContent = '♥'; showToast('Adăugat la favorite ♥');
+  }
+}
+
+function addCurrentToCart() {
+  if (!selectedSize) { showToast('Selectează mai întâi o mărime!'); return; }
+  const p = currentProduct;
+  const key = p.id + '-' + selectedSize;
+  const ex = cart.find(i => i.cartKey === key);
+  if (ex) ex.qty++; else cart.push({ ...p, qty:1, size:selectedSize, cartKey:key });
+  updateCart();
+  showToast('Adăugat în coș ✓');
+}
+
+function quickAddToCart(id) {
+  const p = products.find(x => x.id === id);
+  const key = id + '-quick';
+  const ex = cart.find(i => i.cartKey === key);
+  if (ex) ex.qty++; else cart.push({ ...p, qty:1, size:'—', cartKey:key });
+  updateCart();
+  showToast('Adăugat în coș ✓');
+}
+
+function renderProducts() {
+  document.getElementById('products-grid').innerHTML = products.map(p => `
+    <div class="product-card" onclick="showPage('product',${p.id})">
+      <div class="product-image">
+        <img src="${p.img}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'" />
+        ${p.tag ? `<span class="product-tag">${p.tag}</span>` : ''}
+        <button class="product-wishlist" onclick="event.stopPropagation()">♡</button>
+      </div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-material">${p.material}</div>
+      <div class="product-footer">
+        <div class="product-price">${p.oldPrice?`<span class="old-price">${p.oldPrice.toLocaleString('ro-RO')} RON</span>`:''}${p.price.toLocaleString('ro-RO')} RON</div>
+        <button class="product-add" onclick="event.stopPropagation();quickAddToCart(${p.id})">+ Adaugă</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function removeFromCart(key) {
+  cart = cart.filter(i => i.cartKey !== key);
+  updateCart();
+}
+
+function updateCart() {
+  const total = cart.reduce((s,i) => s+i.price*i.qty, 0);
+  const count = cart.reduce((s,i) => s+i.qty, 0);
+  document.getElementById('cart-badge').textContent = count;
+  document.getElementById('cart-total').textContent = total.toLocaleString('ro-RO') + ' RON';
+  const itemsEl = document.getElementById('cart-items');
+  const emptyEl = document.getElementById('cart-empty');
+  const footerEl = document.getElementById('cart-footer');
+  if (cart.length === 0) {
+    emptyEl.style.display = 'block'; itemsEl.innerHTML = ''; footerEl.style.display = 'none';
+  } else {
+    emptyEl.style.display = 'none'; footerEl.style.display = 'block';
+    itemsEl.innerHTML = cart.map(i => `
+      <div class="cart-item">
+        <div class="cart-item-img"><img src="${i.img}" style="width:100%;height:100%;object-fit:cover;" /></div>
+        <div class="cart-item-info">
+          <div class="cart-item-name">${i.name}</div>
+          <div class="cart-item-detail">${i.material} · Mărime: ${i.size} · Cant: ${i.qty}</div>
+          <div class="cart-item-price">${(i.price*i.qty).toLocaleString('ro-RO')} RON</div>
+          <button class="cart-item-remove" onclick="removeFromCart('${i.cartKey}')">Elimină</button>
+        </div>
+      </div>
+    `).join('');
+  }
+}
+
+function toggleCart(forceOpen) {
+  const overlay = document.getElementById('cart-overlay');
+  const sidebar = document.getElementById('cart-sidebar');
+  const isOpen = sidebar.classList.contains('open');
+  if (forceOpen === true || !isOpen) { overlay.classList.add('open'); sidebar.classList.add('open'); }
+  else { overlay.classList.remove('open'); sidebar.classList.remove('open'); }
+}
+
+function toggleAccordion(header) { header.parentElement.classList.toggle('open'); }
+
+function openSizeGuide() { document.getElementById('size-modal').classList.add('open'); }
+function closeSizeGuide(e) { if (e.target === document.getElementById('size-modal')) document.getElementById('size-modal').classList.remove('open'); }
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+renderProducts();
+updateCart();
+</script>
+</body>
+</html>
