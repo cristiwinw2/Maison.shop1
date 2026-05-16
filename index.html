@@ -1,241 +1,821 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SpanishUp — Invata Spaniola</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;700;800&display=swap');
+:root{
+  --bg:#0d1117;
+  --surface:#161b22;
+  --surface2:#1f2937;
+  --border:#30363d;
+  --gold:#f5c518;
+  --gold2:#e6a800;
+  --red:#ef4444;
+  --green:#22c55e;
+  --blue:#3b82f6;
+  --text:#e6edf3;
+  --muted:#8b949e;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
 
-  .phone-gen-wrap {
-    background: linear-gradient(135deg, #ffb3d9 0%, #ff85c2 40%, #ffcce0 100%);
-    min-height: 600px;
-    padding: 2rem 1.5rem;
-    font-family: 'Nunito', sans-serif;
-    position: relative;
-    overflow: hidden;
-    border-radius: 16px;
-  }
+/* HEADER */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:100;}
+.logo{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:900;color:var(--gold);}
+.logo span{color:var(--text);}
+.progress-bar-wrap{flex:1;background:var(--surface2);border-radius:99px;height:8px;max-width:300px;}
+.progress-bar{background:linear-gradient(90deg,var(--gold),var(--gold2));height:8px;border-radius:99px;transition:width 0.5s;}
+.xp-badge{background:var(--gold);color:#000;font-weight:700;font-size:0.78rem;padding:4px 10px;border-radius:99px;}
 
-  .deco {
-    position: absolute;
-    font-size: 2.2rem;
-    animation: float 4s ease-in-out infinite;
-    user-select: none;
-    pointer-events: none;
-  }
+/* NAV */
+.nav{display:flex;gap:6px;padding:1.5rem 2rem 0;flex-wrap:wrap;}
+.nav-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:99px;padding:7px 18px;font-size:0.82rem;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;}
+.nav-btn.active,.nav-btn:hover{background:var(--gold);border-color:var(--gold);color:#000;font-weight:600;}
 
-  @keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(-5deg); }
-    50% { transform: translateY(-14px) rotate(5deg); }
-  }
+/* MAIN */
+.main{padding:2rem;max-width:820px;margin:0 auto;}
+.section{display:none;}
+.section.active{display:block;}
 
-  .title {
-    font-family: 'Pacifico', cursive;
-    font-size: 1.8rem;
-    color: #8b005d;
-    text-align: center;
-    margin: 0 0 0.3rem;
-    text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
-  }
+/* LESSON CARD */
+.lesson-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem;margin-bottom:1.25rem;}
+.lesson-title{font-family:'Fraunces',serif;font-size:1.4rem;font-weight:700;color:var(--gold);margin-bottom:0.5rem;}
+.lesson-subtitle{color:var(--muted);font-size:0.88rem;margin-bottom:1.25rem;}
 
-  .subtitle {
-    text-align: center;
-    color: #c2006b;
-    font-size: 0.95rem;
-    margin-bottom: 1.5rem;
-    font-weight: 700;
-  }
+/* VOCAB GRID */
+.vocab-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin:1rem 0;}
+.vocab-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative;}
+.vocab-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.vocab-card.flipped{background:#1a2a1a;border-color:var(--green);}
+.vocab-es{font-size:1.2rem;font-weight:700;color:var(--gold);display:block;}
+.vocab-ro{font-size:0.82rem;color:var(--muted);display:block;margin-top:4px;}
+.vocab-pron{font-size:0.75rem;color:#60a5fa;display:block;margin-top:2px;font-style:italic;}
+.asrc-btn{background:none;border:none;cursor:pointer;font-size:1rem;padding:3px 5px;border-radius:6px;opacity:0.5;transition:all 0.15s;}
+.asrc-btn.on,.asrc-btn:hover{opacity:1;background:rgba(245,197,24,0.15);}
+.sound-btn{background:none;border:none;color:var(--gold);cursor:pointer;font-size:1rem;margin-top:6px;}
 
-  .controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-  }
+/* AUDIO NOTE */
+.audio-note{background:#1a1f2e;border:1px solid #2a3a5e;border-radius:10px;padding:1rem;margin:1rem 0;font-size:0.85rem;color:#93c5fd;}
 
-  .count-label {
-    font-weight: 800;
-    color: #8b005d;
-    font-size: 0.95rem;
-  }
+/* PRONUNCIATION */
+.pron-table{width:100%;border-collapse:collapse;margin:1rem 0;}
+.pron-table th{background:var(--surface2);color:var(--gold);font-size:0.82rem;padding:10px 14px;text-align:left;border-bottom:1px solid var(--border);}
+.pron-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:0.88rem;}
+.pron-table tr:hover td{background:var(--surface2);}
+.pron-letter{font-size:1.2rem;font-weight:700;color:var(--gold);}
 
-  .count-input {
-    width: 70px;
-    padding: 6px 10px;
-    border-radius: 50px;
-    border: 2px solid #ff69b4;
-    background: rgba(255,255,255,0.8);
-    font-size: 1rem;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 700;
-    color: #8b005d;
-    text-align: center;
-    outline: none;
-  }
+/* QUIZ */
+.quiz-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2rem;}
+.quiz-q{font-family:'Fraunces',serif;font-size:1.3rem;margin-bottom:0.5rem;}
+.quiz-hint{color:var(--muted);font-size:0.85rem;margin-bottom:1.5rem;}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1.5rem;}
+.option{background:var(--surface2);border:1.5px solid var(--border);border-radius:10px;padding:14px 18px;cursor:pointer;font-size:0.95rem;text-align:left;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;}
+.option:hover{border-color:var(--gold);color:var(--gold);}
+.option.correct{background:#14532d;border-color:var(--green);color:var(--green);}
+.option.wrong{background:#450a0a;border-color:var(--red);color:var(--red);}
+.option.disabled{cursor:not-allowed;}
+.feedback{padding:1rem;border-radius:10px;font-size:0.9rem;margin-bottom:1rem;display:none;}
+.feedback.show{display:block;}
+.feedback.ok{background:#14532d;border:1px solid var(--green);color:var(--green);}
+.feedback.err{background:#450a0a;border:1px solid var(--red);color:var(--red);}
+.next-btn{background:var(--gold);color:#000;border:none;border-radius:10px;padding:12px 28px;font-weight:700;font-size:0.95rem;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;transition:opacity 0.2s;}
+.next-btn:hover{opacity:0.85;}
+.quiz-progress{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;}
+.q-dots{display:flex;gap:6px;}
+.q-dot{width:10px;height:10px;border-radius:50%;background:var(--border);}
+.q-dot.done{background:var(--green);}
+.q-dot.current{background:var(--gold);}
+.score-display{margin-left:auto;font-size:0.85rem;color:var(--muted);}
 
-  .gen-btn {
-    background: #d63384;
-    color: white;
-    border: none;
-    border-radius: 50px;
-    padding: 12px 32px;
-    font-size: 1.1rem;
-    font-family: 'Pacifico', cursive;
-    cursor: pointer;
-    box-shadow: 0 4px 0px #9b1e60;
-    transition: transform 0.1s, box-shadow 0.1s;
-    letter-spacing: 0.5px;
-  }
+/* FILL BLANK */
+.fill-input{background:var(--surface2);border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:1rem;font-family:'Plus Jakarta Sans',sans-serif;width:220px;outline:none;transition:border 0.2s;}
+.fill-input:focus{border-color:var(--gold);}
+.fill-input.ok{border-color:var(--green);background:#14532d;}
+.fill-input.err{border-color:var(--red);background:#450a0a;}
+.check-btn{background:var(--blue);color:#fff;border:none;border-radius:8px;padding:10px 22px;font-weight:600;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-left:8px;}
 
-  .gen-btn:hover {
-    background: #c02070;
-  }
+/* CONVERSATION */
+.conv-box{background:var(--surface2);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem;}
+.conv-msg{margin-bottom:1rem;display:flex;gap:10px;align-items:flex-start;}
+.conv-msg.user{flex-direction:row-reverse;}
+.conv-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+.conv-avatar.ai{background:#1e3a5f;}
+.conv-avatar.usr{background:#3b1f00;}
+.conv-bubble{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;max-width:80%;}
+.conv-msg.user .conv-bubble{background:#3b1f00;border-color:#7c3010;}
+.conv-es{font-weight:600;color:var(--gold);font-size:0.95rem;}
+.conv-ro{color:var(--muted);font-size:0.8rem;margin-top:2px;}
+.conv-options-wrap{display:flex;flex-direction:column;gap:8px;}
+.conv-opt{background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:10px 16px;cursor:pointer;text-align:left;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif;transition:all 0.2s;}
+.conv-opt:hover{border-color:var(--gold);color:var(--gold);}
 
-  .gen-btn:active {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0px #9b1e60;
-  }
+/* LEVEL BADGE */
+.level-badge{display:inline-flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:99px;padding:5px 14px;font-size:0.8rem;color:var(--muted);margin-bottom:1rem;}
+.level-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);}
 
-  .phone-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-    gap: 10px;
-    max-height: 360px;
-    overflow-y: auto;
-    padding-right: 4px;
-  }
+/* SECTION HEADER */
+.sec-head{margin-bottom:1.5rem;}
+.sec-title{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:900;margin-bottom:0.4rem;}
+.sec-desc{color:var(--muted);font-size:0.9rem;}
 
-  .phone-card {
-    background: rgba(255,255,255,0.85);
-    border-radius: 14px;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border: 1.5px solid #ffadd6;
-    animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
-    cursor: pointer;
-    transition: background 0.15s;
-  }
+/* RESULT */
+.result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:2.5rem;text-align:center;}
+.result-emoji{font-size:3rem;margin-bottom:1rem;}
+.result-score{font-family:'Fraunces',serif;font-size:2.5rem;font-weight:900;color:var(--gold);}
+.result-msg{color:var(--muted);margin:0.5rem 0 1.5rem;}
+.restart-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:10px 24px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;margin-right:8px;}
+.restart-btn:hover{border-color:var(--gold);}
 
-  .phone-card:hover {
-    background: rgba(255,255,255,1);
-  }
+/* TIPS */
+.tip-box{background:#1a1f12;border:1px solid #3a5a1a;border-radius:10px;padding:1rem;margin:1rem 0;font-size:0.85rem;color:#86efac;}
+.tip-box strong{color:#4ade80;}
 
-  .phone-card.copied {
-    background: #ffc0e8;
-  }
-
-  @keyframes popIn {
-    from { transform: scale(0.7); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-  }
-
-  .phone-icon {
-    font-size: 1.3rem;
-  }
-
-  .phone-num {
-    font-weight: 800;
-    color: #8b005d;
-    font-size: 0.92rem;
-    letter-spacing: 0.5px;
-    font-family: 'Nunito', sans-serif;
-  }
-
-  .copy-hint {
-    font-size: 0.7rem;
-    color: #c2006b;
-    margin-left: auto;
-    opacity: 0.7;
-  }
-
-  .empty-msg {
-    text-align: center;
-    color: #c2006b;
-    font-weight: 700;
-    font-size: 1rem;
-    padding: 2rem;
-    opacity: 0.7;
-  }
-
-  .stats-bar {
-    text-align: center;
-    font-size: 0.82rem;
-    color: #9b1e60;
-    font-weight: 700;
-    margin-top: 1rem;
-  }
+/* RESPONSIVE — mobile-first */
+@media(max-width:640px){
+  .header{padding:0.6rem 0.9rem;gap:0.5rem;}
+  .logo{font-size:1.15rem;}
+  .progress-bar-wrap{max-width:100px;}
+  .xp-badge{font-size:0.68rem;padding:3px 7px;}
+  .nav{display:flex;flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;padding:0.7rem 0.7rem 0;gap:5px;scrollbar-width:none;}
+  .nav::-webkit-scrollbar{display:none;}
+  .nav-btn{white-space:nowrap;flex-shrink:0;padding:6px 13px;font-size:0.76rem;}
+  .main{padding:0.7rem;}
+  .lesson-card{padding:1rem;}
+  .lesson-title{font-size:1.1rem;}
+  .sec-title{font-size:1.35rem;}
+  .vocab-grid{grid-template-columns:repeat(2,1fr);gap:7px;}
+  .vocab-card{padding:9px 7px;}
+  .vocab-es{font-size:0.97rem;}
+  .options{grid-template-columns:1fr;}
+  .option{padding:11px 13px;font-size:0.88rem;}
+  .quiz-card{padding:1.1rem;}
+  .quiz-q{font-size:1.05rem;}
+  .fill-input{width:100%;margin-bottom:8px;}
+  .check-btn{width:100%;margin-left:0;}
+  .conv-bubble{max-width:93%;}
+  .conv-box{padding:0.9rem;}
+  .pron-table{font-size:0.75rem;}
+  .pron-table th,.pron-table td{padding:6px 7px;}
+  .pron-letter{font-size:0.95rem;}
+  .result-card{padding:1.4rem 1rem;}
+  .result-score{font-size:1.9rem;}
+}
 </style>
+</head>
+<body>
 
-<div class="phone-gen-wrap">
-  <div class="deco" style="top: 10px; left: 20px; animation-delay: 0s;">🐱</div>
-  <div class="deco" style="top: 8px; right: 25px; animation-delay: 0.5s;">🦝</div>
-  <div class="deco" style="top: 55px; left: 5px; animation-delay: 1s; font-size:1.5rem;">🐱</div>
-  <div class="deco" style="top: 60px; right: 8px; animation-delay: 1.5s; font-size:1.5rem;">🦝</div>
-  <div class="deco" style="bottom: 20px; left: 15px; animation-delay: 0.7s;">🐾</div>
-  <div class="deco" style="bottom: 18px; right: 20px; animation-delay: 1.2s;">🐾</div>
-  <div class="deco" style="bottom: 60px; left: 40%; animation-delay: 0.3s; font-size:1.4rem;">🐱</div>
-
-  <h1 class="title">Generatorul de Numere 🌸</h1>
-  <p class="subtitle">🦝 Numere românești cu 07 • Pisici & Ratoni 🐱</p>
-
-  <div class="controls">
-    <span class="count-label">Câte numere?</span>
-    <input class="count-input" type="number" id="countInput" value="10" min="1" max="50" />
-    <button class="gen-btn" onclick="generateNumbers()">🌸 Generare 🌸</button>
+<div class="header">
+  <div class="logo">Spanish<span>Up</span></div>
+  <div class="progress-bar-wrap"><div class="progress-bar" id="globalBar" style="width:0%"></div></div>
+  <div style="display:flex;align-items:center;gap:6px;background:#1f2937;border:1px solid #30363d;border-radius:99px;padding:4px 8px;">
+    <span style="font-size:0.7rem;color:#8b949e;white-space:nowrap;">Voce:</span>
+    <button id="asrc-forvo" class="asrc-btn on" onclick="setAudioSource('forvo')" title="Forvo — vorbitori nativi reali">🎙️</button>
+    <button id="asrc-gtranslate" class="asrc-btn" onclick="setAudioSource('gtranslate')" title="Google Translate">🌐</button>
+    <button id="asrc-browser" class="asrc-btn" onclick="setAudioSource('browser')" title="Voce browser locală">🔊</button>
   </div>
-
-  <div class="phone-grid" id="phoneGrid">
-    <div class="empty-msg">Apasă butonul de generare! 🐱</div>
-  </div>
-
-  <div class="stats-bar" id="statsBar"></div>
+  <div class="xp-badge" id="xpBadge">0 XP</div>
 </div>
 
+<div class="nav">
+  <button class="nav-btn active" onclick="showSection('lectii')">📚 Lecții</button>
+  <button class="nav-btn" onclick="showSection('vocabular')">🔤 Vocabular</button>
+  <button class="nav-btn" onclick="showSection('pronuntie')">🔊 Pronunție</button>
+  <button class="nav-btn" onclick="showSection('test')">✏️ Test</button>
+  <button class="nav-btn" onclick="showSection('conversatie')">💬 Conversație</button>
+  <button class="nav-btn" onclick="showSection('progres')">⭐ Progres</button>
+</div>
+
+<div class="main">
+
+<!-- LECTII -->
+<div class="section active" id="lectii">
+  <div class="sec-head">
+    <div class="sec-title">Lecțiile tale</div>
+    <div class="sec-desc">Urmează ordinea lecțiilor pentru cele mai bune rezultate.</div>
+  </div>
+
+  <div class="lesson-card">
+    <div class="level-badge"><span class="level-dot"></span>Lecția 1 — Baza</div>
+    <div class="lesson-title">🔤 Alfabetul & Pronunția</div>
+    <div class="lesson-subtitle">Spaniola se citește exact cum se scrie! Aceasta este cea mai mare diferență față de română.</div>
+    <div class="tip-box"><strong>💡 Regula de aur:</strong> În spaniolă, fiecare literă se pronunță mereu la fel. Nu există excepții ca în engleză!</div>
+    <table class="pron-table">
+      <tr><th>Literă</th><th>Pronunție</th><th>Exemplu</th><th>Traducere</th></tr>
+      <tr><td class="pron-letter">A</td><td>"a" (ca în română)</td><td>agua</td><td>apă</td></tr>
+      <tr><td class="pron-letter">E</td><td>"e" (ca în română)</td><td>elefante</td><td>elefant</td></tr>
+      <tr><td class="pron-letter">I</td><td>"i" scurt</td><td>isla</td><td>insulă</td></tr>
+      <tr><td class="pron-letter">O</td><td>"o" (ca în română)</td><td>oso</td><td>urs</td></tr>
+      <tr><td class="pron-letter">U</td><td>"u" (ca în română)</td><td>uva</td><td>strugure</td></tr>
+      <tr><td class="pron-letter">Ñ</td><td>"ni" + vocală (ca "ny")</td><td>España</td><td>Spania</td></tr>
+      <tr><td class="pron-letter">LL</td><td>"i" sau "j" (regional)</td><td>llama</td><td>a chema</td></tr>
+      <tr><td class="pron-letter">RR</td><td>"r" rulat puternic</td><td>perro</td><td>câine</td></tr>
+      <tr><td class="pron-letter">H</td><td>mut (nu se pronunță!)</td><td>hola</td><td>salut</td></tr>
+      <tr><td class="pron-letter">J</td><td>"h" aspirat ca în arabă</td><td>jardín</td><td>grădină</td></tr>
+    </table>
+    <button class="next-btn" onclick="showSection('vocabular')">Continuă la Vocabular →</button>
+  </div>
+
+  <div class="lesson-card">
+    <div class="level-badge"><span class="level-dot"></span>Lecția 2 — Salutări</div>
+    <div class="lesson-title">👋 Salutări & Prezentare</div>
+    <div class="lesson-subtitle">Primele cuvinte de care ai nevoie pentru a începe o conversație.</div>
+    <div class="vocab-grid" id="vocab-saluturi"></div>
+    <div class="tip-box"><strong>💡 Știai că?</strong> Spaniolii folosesc atât "tú" (informal) cât și "usted" (formal). La început folosește "tú" cu cei de vârsta ta și "usted" cu persoanele mai în vârstă.</div>
+  </div>
+
+  <div class="lesson-card">
+    <div class="level-badge"><span class="level-dot"></span>Lecția 3 — Numere</div>
+    <div class="lesson-title">🔢 Numerele 1–20</div>
+    <div class="lesson-subtitle">Esențiale pentru preț, oră, vârstă.</div>
+    <div class="vocab-grid" id="vocab-numere"></div>
+  </div>
+
+  <div class="lesson-card">
+    <div class="level-badge"><span class="level-dot"></span>Lecția 4 — Fraze esențiale</div>
+    <div class="lesson-title">💬 Fraze de supraviețuire</div>
+    <div class="lesson-subtitle">Cu aceste fraze poți descurca în orice situație de bază.</div>
+    <div class="vocab-grid" id="vocab-fraze"></div>
+  </div>
+
+  <div class="lesson-card">
+    <div class="level-badge"><span class="level-dot"></span>Lecția 5 — Gramatică de bază</div>
+    <div class="lesson-title">📖 Verbele esențiale: SER & ESTAR</div>
+    <div class="lesson-subtitle">Amândouă înseamnă "a fi" dar se folosesc diferit!</div>
+    <div class="tip-box"><strong>SER</strong> — pentru caracteristici permanente: Soy rumano. (Sunt român.) · Ella es inteligente. (Ea este inteligentă.)<br><br><strong>ESTAR</strong> — pentru stări temporare: Estoy cansado. (Sunt obosit.) · Estamos en casa. (Suntem acasă.)</div>
+    <table class="pron-table">
+      <tr><th>Pronume</th><th>SER</th><th>ESTAR</th></tr>
+      <tr><td>Yo (eu)</td><td>soy</td><td>estoy</td></tr>
+      <tr><td>Tú (tu)</td><td>eres</td><td>estás</td></tr>
+      <tr><td>Él/Ella (el/ea)</td><td>es</td><td>está</td></tr>
+      <tr><td>Nosotros (noi)</td><td>somos</td><td>estamos</td></tr>
+      <tr><td>Vosotros (voi)</td><td>sois</td><td>estáis</td></tr>
+      <tr><td>Ellos (ei)</td><td>son</td><td>están</td></tr>
+    </table>
+    <div class="tip-box" style="margin-top:1.2rem"><strong>💡 TENER</strong> — înseamnă "a avea" și este unul dintre cele mai folosite verbe în spaniolă!<br><br>Exemple: <em>Tengo hambre</em> (Mi-e foame) · <em>Tengo veinte años</em> (Am douăzeci de ani) · <em>Tengo sed</em> (Mi-e sete)</div>
+    <table class="pron-table">
+      <tr><th>Pronume</th><th>TENER (a avea)</th><th>Exemplu</th></tr>
+      <tr><td>Yo (eu)</td><td style="color:var(--gold);font-weight:700">tengo</td><td style="color:var(--muted);font-size:0.82rem">Tengo un libro. (Am o carte.)</td></tr>
+      <tr><td>Tú (tu)</td><td>tienes</td><td style="color:var(--muted);font-size:0.82rem">¿Tienes hambre? (Ți-e foame?)</td></tr>
+      <tr><td>Él/Ella (el/ea)</td><td>tiene</td><td style="color:var(--muted);font-size:0.82rem">Ella tiene sed. (Ei îi e sete.)</td></tr>
+      <tr><td>Nosotros (noi)</td><td>tenemos</td><td style="color:var(--muted);font-size:0.82rem">Tenemos tiempo. (Avem timp.)</td></tr>
+      <tr><td>Vosotros (voi)</td><td>tenéis</td><td style="color:var(--muted);font-size:0.82rem">¿Tenéis frío? (Vă e frig?)</td></tr>
+      <tr><td>Ellos (ei)</td><td>tienen</td><td style="color:var(--muted);font-size:0.82rem">Tienen razón. (Au dreptate.)</td></tr>
+    </table>
+    <button class="next-btn" onclick="showSection('test')">Fă testul →</button>
+  </div>
+</div>
+
+<!-- VOCABULAR -->
+<div class="section" id="vocabular">
+  <div class="sec-head">
+    <div class="sec-title">Vocabular</div>
+    <div class="sec-desc">Click pe fiecare card pentru a vedea traducerea. Apasă 🔊 pentru pronunție.</div>
+  </div>
+
+  <div class="lesson-card">
+    <div class="lesson-title">👋 Salutări</div>
+    <div class="vocab-grid" id="voc-sal"></div>
+  </div>
+  <div class="lesson-card">
+    <div class="lesson-title">🔢 Numere</div>
+    <div class="vocab-grid" id="voc-num"></div>
+  </div>
+  <div class="lesson-card">
+    <div class="lesson-title">🍎 Mâncare & Băutură</div>
+    <div class="vocab-grid" id="voc-mancare"></div>
+  </div>
+  <div class="lesson-card">
+    <div class="lesson-title">👨‍👩‍👧 Familie</div>
+    <div class="vocab-grid" id="voc-familie"></div>
+  </div>
+  <div class="lesson-card">
+    <div class="lesson-title">🎨 Culori</div>
+    <div class="vocab-grid" id="voc-culori"></div>
+  </div>
+  <div class="lesson-card">
+    <div class="lesson-title">📅 Zile & Luni</div>
+    <div class="vocab-grid" id="voc-zile"></div>
+  </div>
+</div>
+
+<!-- PRONUNTIE -->
+<div class="section" id="pronuntie">
+  <div class="sec-head">
+    <div class="sec-title">Pronunție</div>
+    <div class="sec-desc">Ghid complet de pronunție pentru începători.</div>
+  </div>
+
+  <div class="lesson-card">
+    <div class="lesson-title">🔊 Vocalele spaniole</div>
+    <div class="lesson-subtitle">Spre deosebire de română, vocalele spaniole sunt mereu scurte și clare.</div>
+    <div class="audio-note">ℹ️ Trei surse audio disponibile — alege din header:<br><strong>🎙️ Forvo</strong> = vorbitori nativi reali (recomandat) · <strong>🌐 Google Translate</strong> = sinteză de calitate · <strong>🔊 Browser</strong> = voce locală</div>
+    <table class="pron-table">
+      <tr><th>Vocală</th><th>Sunet</th><th>Exemple</th><th>🔊</th></tr>
+      <tr><td class="pron-letter">A</td><td>Scurt și clar, ca "a" din "apă"</td><td>agua, casa, mamá</td><td><div style="display:flex;gap:3px"><button class="sound-btn" title="Forvo" onclick="openForvo('agua')">🎙️</button><button class="sound-btn" title="Google" onclick="openGTranslate('agua, casa, mamá')">🌐</button><button class="sound-btn" title="Browser" onclick="speakBrowser('agua, casa, mamá')">🔊</button></div></td></tr>
+      <tr><td class="pron-letter">E</td><td>Ca "e" din "elev", niciodată mut</td><td>elefante, leche, mes</td><td><div style="display:flex;gap:3px"><button class="sound-btn" title="Forvo" onclick="openForvo('elefante')">🎙️</button><button class="sound-btn" title="Google" onclick="openGTranslate('elefante, leche, mes')">🌐</button><button class="sound-btn" title="Browser" onclick="speakBrowser('elefante, leche, mes')">🔊</button></div></td></tr>
+      <tr><td class="pron-letter">I</td><td>Ca "i" din "inimă", scurt</td><td>isla, libro, día</td><td><div style="display:flex;gap:3px"><button class="sound-btn" title="Forvo" onclick="openForvo('isla')">🎙️</button><button class="sound-btn" title="Google" onclick="openGTranslate('isla, libro, día')">🌐</button><button class="sound-btn" title="Browser" onclick="speakBrowser('isla, libro, día')">🔊</button></div></td></tr>
+      <tr><td class="pron-letter">O</td><td>Ca "o" din "om", rotund</td><td>oso, todo, órgano</td><td><div style="display:flex;gap:3px"><button class="sound-btn" title="Forvo" onclick="openForvo('oso')">🎙️</button><button class="sound-btn" title="Google" onclick="openGTranslate('oso, todo, órgano')">🌐</button><button class="sound-btn" title="Browser" onclick="speakBrowser('oso, todo, órgano')">🔊</button></div></td></tr>
+      <tr><td class="pron-letter">U</td><td>Ca "u" din "urs", buzele rotunde</td><td>uva, uno, música</td><td><div style="display:flex;gap:3px"><button class="sound-btn" title="Forvo" onclick="openForvo('uva')">🎙️</button><button class="sound-btn" title="Google" onclick="openGTranslate('uva, uno, música')">🌐</button><button class="sound-btn" title="Browser" onclick="speakBrowser('uva, uno, música')">🔊</button></div></td></tr>
+    </table>
+  </div>
+
+  <div class="lesson-card">
+    <div class="lesson-title">⚠️ Litere dificile</div>
+    <table class="pron-table">
+      <tr><th>Literă</th><th>Cum se pronunță</th><th>Exemplu</th><th>🔊</th></tr>
+      <tr><td class="pron-letter">J</td><td>Ca "h" aspirat englezesc (nu ca "j" română)</td><td>jardín, joven</td><td><div style="display:flex;gap:3px"><button class="sound-btn" onclick="openForvo('jardín')">🎙️</button><button class="sound-btn" onclick="openGTranslate('jardín, joven')">🌐</button><button class="sound-btn" onclick="speakBrowser('jardín, joven')">🔊</button></div></td></tr>
+      <tr><td class="pron-letter">H</td><td>MUT — nu se pronunță deloc!</td><td>hola, hotel</td><td><div style="display:flex;gap:3px"><button class="sound-btn" onclick="openForvo('hola')">🎙️</button><button class="sound-btn" onclick="openGTranslate('hola, hotel')">🌐</button><button class="sound-btn" onclick="speakBrowser('hola, hotel')">🔊</button></div></td></tr>
+      <tr><td class="pron-letter">Ñ</td><td>Ca "ni" + vocală (España = Espania)</td><td>España, mañana</td><td><div style="display:flex;gap:3px"><button class="sound-btn" onclick="openForvo('España')">🎙️</button><button class="sound-btn" onclick="openGTranslate('España, mañana')">🌐</button><button class="sound-btn" onclick="speakBrowser('España, mañana')">🔊</button></div></td></tr>
+      <tr><td class="pron-letter">LL</td><td>Ca "i" în multe regiuni</td><td>llama, lluvia</td><td><div style="display:flex;gap:3px"><button class="sound-btn" onclick="openForvo('llama')">🎙️</button><button class="sound-btn" onclick="openGTranslate('llama, lluvia')">🌐</button><button class="sound-btn" onclick="speakBrowser('llama, lluvia')">🔊</button></div></td></tr>
+      <tr><td class="pron-letter">RR</td><td>R rulat puternic (vibrează limba)</td><td>perro, carro</td><td><div style="display:flex;gap:3px"><button class="sound-btn" onclick="openForvo('perro')">🎙️</button><button class="sound-btn" onclick="openGTranslate('perro, carro')">🌐</button><button class="sound-btn" onclick="speakBrowser('perro, carro')">🔊</button></div></td></tr>
+      <tr><td class="pron-letter">C + e/i</td><td>Ca "s" (în America Latină) sau "th" (Spania)</td><td>ciudad, cinco</td><td><div style="display:flex;gap:3px"><button class="sound-btn" onclick="openForvo('ciudad')">🎙️</button><button class="sound-btn" onclick="openGTranslate('ciudad, cinco')">🌐</button><button class="sound-btn" onclick="speakBrowser('ciudad, cinco')">🔊</button></div></td></tr>
+      <tr><td class="pron-letter">G + e/i</td><td>Ca "h" aspirat</td><td>gente, gitano</td><td><div style="display:flex;gap:3px"><button class="sound-btn" onclick="openForvo('gente')">🎙️</button><button class="sound-btn" onclick="openGTranslate('gente, gitano')">🌐</button><button class="sound-btn" onclick="speakBrowser('gente, gitano')">🔊</button></div></td></tr>
+      <tr><td class="pron-letter">V</td><td>Ca "b" în spaniolă!</td><td>vino, vida</td><td><div style="display:flex;gap:3px"><button class="sound-btn" onclick="openForvo('vino')">🎙️</button><button class="sound-btn" onclick="openGTranslate('vino, vida')">🌐</button><button class="sound-btn" onclick="speakBrowser('vino, vida')">🔊</button></div></td></tr>
+    </table>
+  </div>
+
+  <div class="lesson-card">
+    <div class="lesson-title">🎯 Practică pronunție</div>
+    <div class="lesson-subtitle">Apasă pe fiecare frază pentru a o auzi, apoi repetă cu voce tare.</div>
+    <div class="vocab-grid" id="pron-practice"></div>
+  </div>
+</div>
+
+<!-- TEST -->
+<div class="section" id="test">
+  <div class="sec-head">
+    <div class="sec-title">Test</div>
+    <div class="sec-desc">Testează-ți cunoștințele! Ai 15 întrebări din toate lecțiile.</div>
+  </div>
+  <div id="quiz-container"></div>
+</div>
+
+<!-- CONVERSATIE -->
+<div class="section" id="conversatie">
+  <div class="sec-head">
+    <div class="sec-title">Conversație simulată</div>
+    <div class="sec-desc">Exersează dialoguri reale. Alege răspunsul corect pentru a continua conversația.</div>
+  </div>
+  <div id="conv-container"></div>
+</div>
+
+<!-- PROGRES -->
+<div class="section" id="progres">
+  <div class="sec-head">
+    <div class="sec-title">Progresul tău</div>
+    <div class="sec-desc">Urmărește evoluția ta în învățarea spaniolei.</div>
+  </div>
+  <div id="progres-content"></div>
+</div>
+
+</div><!-- end main -->
+
 <script>
-const prefixes = ['07200', '07210', '07230', '07310', '07320', '07400', '07410', '07420', '07430', '07480', '07490', '07600', '07610', '07620', '07630', '07640', '07650', '07700', '07710', '07720', '07730', '07740', '07750', '07760', '07770', '07800', '07810', '07820', '07830', '07840', '07850', '07860', '07870', '07880', '07900', '07910', '07920', '07930', '07940', '07950', '07960', '07970', '07980', '07990'];
-const catIcons = ['🐱','🐾','🦝','😺','🐈','🦝','🐱','🐾'];
+// ===== DATA =====
+const vocabSaluturi = [
+  {es:'Hola',ro:'Salut',pron:'O-la'},
+  {es:'Buenos días',ro:'Bună dimineața',pron:'Bue-nos DI-as'},
+  {es:'Buenas tardes',ro:'Bună ziua / seara',pron:'Bue-nas TAR-des'},
+  {es:'Buenas noches',ro:'Bună seara / noapte',pron:'Bue-nas NO-ches'},
+  {es:'¿Cómo estás?',ro:'Ce mai faci?',pron:'CO-mo es-TAS'},
+  {es:'Bien, gracias',ro:'Bine, mulțumesc',pron:'Bien GRA-cias'},
+  {es:'Me llamo...',ro:'Mă numesc...',pron:'me LLA-mo'},
+  {es:'¿Y tú?',ro:'Dar tu?',pron:'i TU'},
+  {es:'Mucho gusto',ro:'Îmi pare bine',pron:'MU-cho GUS-to'},
+  {es:'Adiós',ro:'La revedere',pron:'a-DIOS'},
+  {es:'Hasta luego',ro:'Pe curând',pron:'AS-ta LUE-go'},
+  {es:'Por favor',ro:'Te rog',pron:'por fa-VOR'},
+  {es:'Gracias',ro:'Mulțumesc',pron:'GRA-cias'},
+  {es:'De nada',ro:'Cu plăcere',pron:'de NA-da'},
+  {es:'Lo siento',ro:'Îmi pare rău',pron:'lo SIEN-to'},
+  {es:'Perdón',ro:'Scuze / Pardon',pron:'per-DON'},
+];
 
-function randDigits(n) {
-  let s = '';
-  for (let i = 0; i < n; i++) s += Math.floor(Math.random() * 10);
-  return s;
+const vocabNumere = [
+  {es:'1 — uno',ro:'unu',pron:'U-no'},
+  {es:'2 — dos',ro:'doi',pron:'dos'},
+  {es:'3 — tres',ro:'trei',pron:'tres'},
+  {es:'4 — cuatro',ro:'patru',pron:'CUA-tro'},
+  {es:'5 — cinco',ro:'cinci',pron:'SIN-co'},
+  {es:'6 — seis',ro:'șase',pron:'seis'},
+  {es:'7 — siete',ro:'șapte',pron:'SIE-te'},
+  {es:'8 — ocho',ro:'opt',pron:'O-cho'},
+  {es:'9 — nueve',ro:'nouă',pron:'NUE-ve'},
+  {es:'10 — diez',ro:'zece',pron:'diez'},
+  {es:'11 — once',ro:'unsprezece',pron:'ON-ce'},
+  {es:'12 — doce',ro:'doisprezece',pron:'DO-ce'},
+  {es:'13 — trece',ro:'treisprezece',pron:'TRE-ce'},
+  {es:'14 — catorce',ro:'paisprezece',pron:'ca-TOR-ce'},
+  {es:'15 — quince',ro:'cincisprezece',pron:'KIN-ce'},
+  {es:'16 — dieciséis',ro:'șaisprezece',pron:'die-ci-SEIS'},
+  {es:'17 — diecisiete',ro:'șaptesprezece',pron:'die-ci-SIE-te'},
+  {es:'18 — dieciocho',ro:'optsprezece',pron:'die-ci-O-cho'},
+  {es:'19 — diecinueve',ro:'nouăsprezece',pron:'die-ci-NUE-ve'},
+  {es:'20 — veinte',ro:'douăzeci',pron:'VEIN-te'},
+];
+
+const vocabMancare = [
+  {es:'agua',ro:'apă',pron:'A-gua'},{es:'leche',ro:'lapte',pron:'LE-che'},
+  {es:'pan',ro:'pâine',pron:'pan'},{es:'arroz',ro:'orez',pron:'a-RROZ'},
+  {es:'carne',ro:'carne',pron:'CAR-ne'},{es:'pollo',ro:'pui',pron:'PO-llo'},
+  {es:'pescado',ro:'pește',pron:'pes-CA-do'},{es:'ensalada',ro:'salată',pron:'en-sa-LA-da'},
+  {es:'fruta',ro:'fruct',pron:'FRU-ta'},{es:'café',ro:'cafea',pron:'ca-FE'},
+  {es:'vino',ro:'vin',pron:'VI-no'},{es:'cerveza',ro:'bere',pron:'cer-VE-za'},
+  {es:'queso',ro:'brânză',pron:'KE-so'},{es:'huevo',ro:'ou',pron:'UE-vo'},
+];
+
+const vocabFamilie = [
+  {es:'madre',ro:'mamă',pron:'MA-dre'},{es:'padre',ro:'tată',pron:'PA-dre'},
+  {es:'hermano',ro:'frate',pron:'er-MA-no'},{es:'hermana',ro:'soră',pron:'er-MA-na'},
+  {es:'abuelo',ro:'bunic',pron:'a-BUE-lo'},{es:'abuela',ro:'bunică',pron:'a-BUE-la'},
+  {es:'hijo',ro:'fiu',pron:'I-ho'},{es:'hija',ro:'fiică',pron:'I-ha'},
+  {es:'amigo',ro:'prieten',pron:'a-MI-go'},{es:'esposo',ro:'soț',pron:'es-PO-so'},
+];
+
+const vocabCulori = [
+  {es:'rojo',ro:'roșu',pron:'RO-ho'},{es:'azul',ro:'albastru',pron:'a-ZUL'},
+  {es:'verde',ro:'verde',pron:'VER-de'},{es:'amarillo',ro:'galben',pron:'a-ma-RI-llo'},
+  {es:'negro',ro:'negru',pron:'NE-gro'},{es:'blanco',ro:'alb',pron:'BLAN-co'},
+  {es:'naranja',ro:'portocaliu',pron:'na-RAN-ha'},{es:'morado',ro:'mov',pron:'mo-RA-do'},
+  {es:'rosa',ro:'roz',pron:'RO-sa'},{es:'gris',ro:'gri',pron:'gris'},
+];
+
+const vocabZile = [
+  {es:'lunes',ro:'luni',pron:'LU-nes'},{es:'martes',ro:'marți',pron:'MAR-tes'},
+  {es:'miércoles',ro:'miercuri',pron:'MIER-co-les'},{es:'jueves',ro:'joi',pron:'HUE-ves'},
+  {es:'viernes',ro:'vineri',pron:'VIER-nes'},{es:'sábado',ro:'sâmbătă',pron:'SA-ba-do'},
+  {es:'domingo',ro:'duminică',pron:'do-MIN-go'},{es:'enero',ro:'ianuarie',pron:'e-NE-ro'},
+  {es:'febrero',ro:'februarie',pron:'fe-BRE-ro'},{es:'marzo',ro:'martie',pron:'MAR-so'},
+  {es:'julio',ro:'iulie',pron:'HU-lio'},{es:'diciembre',ro:'decembrie',pron:'di-SIEM-bre'},
+];
+
+const vocabFraze = [
+  {es:'¿Dónde está...?',ro:'Unde este...?',pron:'DON-de es-TA'},
+  {es:'¿Cuánto cuesta?',ro:'Cât costă?',pron:'CUAN-to CUES-ta'},
+  {es:'No entiendo',ro:'Nu înțeleg',pron:'no en-TIEN-do'},
+  {es:'¿Hablas inglés?',ro:'Vorbești engleză?',pron:'A-blas in-GLES'},
+  {es:'Necesito ayuda',ro:'Am nevoie de ajutor',pron:'ne-ce-SI-to a-YU-da'},
+  {es:'¿Puedes repetir?',ro:'Poți repeta?',pron:'PUE-des re-pe-TIR'},
+  {es:'Más despacio',ro:'Mai încet',pron:'mas des-PA-cio'},
+  {es:'¿Cómo se dice...?',ro:'Cum se spune...?',pron:'CO-mo se DI-ce'},
+  {es:'Me gusta',ro:'Îmi place',pron:'me GUS-ta'},
+  {es:'Quiero...',ro:'Vreau...',pron:'KIE-ro'},
+  {es:'¿Qué hora es?',ro:'Ce oră este?',pron:'ke O-ra es'},
+  {es:'Tengo hambre',ro:'Mi-e foame',pron:'TEN-go AM-bre'},
+];
+
+const pronPractice = [
+  {es:'Hola, ¿cómo estás?',ro:'Salut, ce mai faci?',pron:'O-la CO-mo es-TAS'},
+  {es:'Me llamo Carlos',ro:'Mă numesc Carlos',pron:'me LLA-mo CAR-los'},
+  {es:'Buenos días, señor',ro:'Bună dimineața, domnule',pron:'BUE-nos DI-as se-NIOR'},
+  {es:'¿Dónde está el baño?',ro:'Unde este baia?',pron:'DON-de es-TA el BA-nio'},
+  {es:'Muchas gracias',ro:'Mulțumesc foarte mult',pron:'MU-chas GRA-cias'},
+  {es:'No hablo español bien',ro:'Nu vorbesc spaniola bine',pron:'no A-blo es-pa-NIOL bien'},
+];
+
+// ===== STATE =====
+let xp = 0;
+let quizScore = 0;
+let quizIndex = 0;
+let quizAnswered = false;
+let convStep = 0;
+
+// ===== AUDIO SOURCE =====
+let audioSource = 'forvo'; // 'forvo' | 'gtranslate' | 'browser'
+
+function setAudioSource(src) {
+  audioSource = src;
+  document.querySelectorAll('.asrc-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('asrc-' + src).classList.add('on');
 }
 
-function formatPhone(raw) {
-  return raw.slice(0,4) + ' ' + raw.slice(4,7) + ' ' + raw.slice(7,10);
+function openForvo(word) {
+  const clean = word.replace(/[¿¡?!.,]/g,'').trim().split(' ')[0];
+  window.open('https://forvo.com/word/' + encodeURIComponent(clean) + '/#es', '_blank');
 }
 
-function generateNumbers() {
-  const count = Math.min(50, Math.max(1, parseInt(document.getElementById('countInput').value) || 10));
-  const grid = document.getElementById('phoneGrid');
-  const statsBar = document.getElementById('statsBar');
-  grid.innerHTML = '';
-  const numbers = [];
+function openGTranslate(text) {
+  const url = 'https://translate.google.com/?sl=es&tl=ro&text=' + encodeURIComponent(text) + '&op=translate';
+  window.open(url, '_blank');
+}
 
-  for (let i = 0; i < count; i++) {
-    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
-    const rest = randDigits(10 - prefix.length);
-    const raw = prefix + rest;
-    numbers.push(raw);
+function speakBrowser(text) {
+  if (!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const voices = speechSynthesis.getVoices();
+  const esVoice = voices.find(v => v.lang.startsWith('es')) || null;
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'es-ES';
+  u.rate = 0.82;
+  if (esVoice) u.voice = esVoice;
+  speechSynthesis.speak(u);
+}
 
-    const card = document.createElement('div');
-    card.className = 'phone-card';
-    card.style.animationDelay = (i * 0.04) + 's';
-    const icon = catIcons[i % catIcons.length];
-    card.innerHTML = `<span class="phone-icon">${icon}</span><span class="phone-num">${formatPhone(raw)}</span><span class="copy-hint">copiază</span>`;
-    card.addEventListener('click', () => {
-      navigator.clipboard.writeText(raw).catch(() => {});
-      card.classList.add('copied');
-      card.querySelector('.copy-hint').textContent = '✓ copiat!';
-      setTimeout(() => {
-        card.classList.remove('copied');
-        card.querySelector('.copy-hint').textContent = 'copiază';
-      }, 1500);
-    });
-    grid.appendChild(card);
+function speak(text) {
+  if (audioSource === 'forvo') openForvo(text);
+  else if (audioSource === 'gtranslate') openGTranslate(text);
+  else speakBrowser(text);
+}
+
+function addXP(amount) {
+  xp += amount;
+  document.getElementById('xpBadge').textContent = xp + ' XP';
+  const pct = Math.min(100, (xp / 500) * 100);
+  document.getElementById('globalBar').style.width = pct + '%';
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  const idx = ['lectii','vocabular','pronuntie','test','conversatie','progres'].indexOf(id);
+  document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+  if (id === 'test') initQuiz();
+  if (id === 'conversatie') initConv();
+  if (id === 'progres') renderProgress();
+}
+
+function makeVocabCard(item, container) {
+  const d = document.createElement('div');
+  d.className = 'vocab-card';
+  const esc = item.es.replace(/'/g,"\\'");
+  d.innerHTML = `<span class="vocab-es">${item.es}</span><span class="vocab-pron">/${item.pron}/</span><span class="vocab-ro" style="display:none">${item.ro}</span><div style="display:flex;gap:4px;justify-content:center;margin-top:6px"><button class="sound-btn" title="Forvo — vorbitori nativi" onclick="event.stopPropagation();openForvo('${esc}')">🎙️</button><button class="sound-btn" title="Google Translate audio" onclick="event.stopPropagation();openGTranslate('${esc}')">🌐</button><button class="sound-btn" title="Voce browser" onclick="event.stopPropagation();speakBrowser('${esc}')">🔊</button></div>`;
+  d.addEventListener('click', () => {
+    d.classList.toggle('flipped');
+    d.querySelector('.vocab-ro').style.display = d.classList.contains('flipped') ? 'block' : 'none';
+    if (d.classList.contains('flipped')) addXP(1);
+  });
+  container.appendChild(d);
+}
+
+function renderVocab(data, containerId) {
+  const c = document.getElementById(containerId);
+  if (!c || c.dataset.rendered) return;
+  c.dataset.rendered = '1';
+  data.forEach(item => makeVocabCard(item, c));
+}
+
+// ===== QUIZ =====
+const allQuestions = [
+  {q:'Ce înseamnă "Hola"?',opts:['La revedere','Salut','Mulțumesc','Te rog'],a:1},
+  {q:'Cum spui "apă" în spaniolă?',opts:['leche','vino','agua','pan'],a:2},
+  {q:'Ce înseamnă "gracias"?',opts:['Te rog','Scuze','Salut','Mulțumesc'],a:3},
+  {q:'Cum se numără "3" în spaniolă?',opts:['dos','cuatro','tres','cinco'],a:2},
+  {q:'Ce înseamnă "Buenos días"?',opts:['Bună seara','La revedere','Bună dimineața','Ce mai faci?'],a:2},
+  {q:'Cum spui "câine" în spaniolă?',opts:['gato','perro','pájaro','pez'],a:1},
+  {q:'"H" în spaniolă se pronunță...?',opts:['Ca H în română','Ca F','Nu se pronunță deloc','Ca K'],a:2},
+  {q:'Ce înseamnă "Me llamo"?',opts:['Îmi place','Mă numesc','Am nevoie','Vreau'],a:1},
+  {q:'Cum spui "mulțumesc frumos"?',opts:['Gracias','Muchas gracias','De nada','Por favor'],a:1},
+  {q:'Ce înseamnă "rojo"?',opts:['Albastru','Verde','Roșu','Galben'],a:2},
+  {q:'Cum spui "luni" în spaniolă?',opts:['martes','miércoles','viernes','lunes'],a:3},
+  {q:'Ce înseamnă "No entiendo"?',opts:['Nu vorbesc','Nu înțeleg','Nu știu','Nu pot'],a:1},
+  {q:'"Ñ" se pronunță ca...?',opts:['"n" simplu','"ng"','"ni" + vocală','"ny" din engleză'],a:2},
+  {q:'Ce înseamnă "¿Cuánto cuesta?"',opts:['Unde este?','Cât costă?','Ce oră este?','Cum te cheamă?'],a:1},
+  {q:'Cum spui "îmi place" în spaniolă?',opts:['Me llamo','Me gusta','Me lleva','Me quedo'],a:1},
+];
+
+function initQuiz() {
+  quizIndex = 0; quizScore = 0; quizAnswered = false;
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const c = document.getElementById('quiz-container');
+  if (quizIndex >= allQuestions.length) {
+    const pct = Math.round((quizScore / allQuestions.length) * 100);
+    const emoji = pct >= 80 ? '🎉' : pct >= 60 ? '👍' : '📚';
+    const msg = pct >= 80 ? 'Excelent! Ești grozav!' : pct >= 60 ? 'Bine! Mai exersează puțin.' : 'Nu-ți face griji, repetă lecțiile și mai încearcă!';
+    addXP(quizScore * 5);
+    c.innerHTML = `<div class="result-card"><div class="result-emoji">${emoji}</div><div class="result-score">${quizScore}/${allQuestions.length}</div><div style="font-size:1.5rem;color:var(--gold);margin:4px 0">${pct}%</div><div class="result-msg">${msg}</div><button class="next-btn" onclick="initQuiz()">🔄 Reîncepe testul</button></div>`;
+    return;
+  }
+  const q = allQuestions[quizIndex];
+  const dots = allQuestions.map((_, i) => `<div class="q-dot ${i < quizIndex ? 'done' : i === quizIndex ? 'current' : ''}"></div>`).join('');
+  c.innerHTML = `<div class="quiz-card">
+    <div class="quiz-progress"><div class="q-dots">${dots}</div><div class="score-display">✅ ${quizScore}/${allQuestions.length}</div></div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-hint">Alege răspunsul corect:</div>
+    <div class="options">${q.opts.map((o,i) => `<button class="option" onclick="answerQuiz(${i})">${o}</button>`).join('')}</div>
+    <div class="feedback" id="fb"></div>
+    <button class="next-btn" id="nextQBtn" style="display:none" onclick="nextQ()">Următoarea →</button>
+  </div>`;
+}
+
+function answerQuiz(idx) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = allQuestions[quizIndex];
+  const opts = document.querySelectorAll('.option');
+  const fb = document.getElementById('fb');
+  const nb = document.getElementById('nextQBtn');
+  opts.forEach((o, i) => {
+    o.classList.add('disabled');
+    if (i === q.a) o.classList.add('correct');
+    else if (i === idx) o.classList.add('wrong');
+  });
+  if (idx === q.a) {
+    quizScore++;
+    fb.className = 'feedback show ok';
+    fb.textContent = '✅ Corect! Bravo!';
+    addXP(10);
+  } else {
+    fb.className = 'feedback show err';
+    fb.textContent = `❌ Greșit. Răspunsul corect era: "${q.opts[q.a]}"`;
+  }
+  nb.style.display = 'inline-block';
+}
+
+function nextQ() {
+  quizIndex++;
+  quizAnswered = false;
+  renderQuiz();
+}
+
+// ===== CONVERSATION =====
+const conversations = [
+  {
+    title:'☕ La cafenea',
+    steps:[
+      {speaker:'ai', es:'¡Hola! ¿Qué quieres tomar?', ro:'Salut! Ce vrei să bei?'},
+      {speaker:'user', opts:[
+        {text:'Un café, por favor.', ro:'O cafea, te rog.', correct:true},
+        {text:'Soy estudiante.', ro:'Sunt student.', correct:false},
+        {text:'Me llamo Ana.', ro:'Mă numesc Ana.', correct:false},
+      ]},
+      {speaker:'ai', es:'¿Grande o pequeño?', ro:'Mare sau mic?'},
+      {speaker:'user', opts:[
+        {text:'Grande, gracias.', ro:'Mare, mulțumesc.', correct:true},
+        {text:'Buenos días.', ro:'Bună dimineața.', correct:false},
+        {text:'No entiendo.', ro:'Nu înțeleg.', correct:false},
+      ]},
+      {speaker:'ai', es:'Son dos euros, por favor.', ro:'Sunt doi euro, te rog.'},
+      {speaker:'user', opts:[
+        {text:'Aquí tienes. ¡Gracias!', ro:'Poftim. Mulțumesc!', correct:true},
+        {text:'¿Dónde está el baño?', ro:'Unde este baia?', correct:false},
+        {text:'Adiós.', ro:'La revedere.', correct:false},
+      ]},
+      {speaker:'ai', es:'¡De nada! ¡Hasta luego!', ro:'Cu plăcere! Pe curând!'},
+    ]
+  },
+  {
+    title:'👋 Prezentare personală',
+    steps:[
+      {speaker:'ai', es:'¡Hola! ¿Cómo te llamas?', ro:'Salut! Cum te cheamă?'},
+      {speaker:'user', opts:[
+        {text:'Me llamo Ana. ¿Y tú?', ro:'Mă numesc Ana. Dar tu?', correct:true},
+        {text:'Tengo hambre.', ro:'Mi-e foame.', correct:false},
+        {text:'No hablo español.', ro:'Nu vorbesc spaniola.', correct:false},
+      ]},
+      {speaker:'ai', es:'Me llamo Carlos. ¿De dónde eres?', ro:'Mă numesc Carlos. De unde ești?'},
+      {speaker:'user', opts:[
+        {text:'Soy de Rumanía. ¿Y tú?', ro:'Sunt din România. Dar tu?', correct:true},
+        {text:'Me gusta el café.', ro:'Îmi place cafeaua.', correct:false},
+        {text:'Adiós.', ro:'La revedere.', correct:false},
+      ]},
+      {speaker:'ai', es:'Soy de España. ¿Cuántos años tienes?', ro:'Sunt din Spania. Câți ani ai?'},
+      {speaker:'user', opts:[
+        {text:'Tengo veinte años. ¿Y tú?', ro:'Am douăzeci de ani. Dar tu?', correct:true},
+        {text:'Hace calor.', ro:'E cald.', correct:false},
+        {text:'No entiendo.', ro:'Nu înțeleg.', correct:false},
+      ]},
+      {speaker:'ai', es:'Tengo veinticinco años. ¡Mucho gusto!', ro:'Am douăzeci și cinci de ani. Îmi pare bine!'},
+    ]
+  },
+  {
+    title:'🏨 La hotel',
+    steps:[
+      {speaker:'ai', es:'¡Buenas tardes! ¿En qué le puedo ayudar?', ro:'Bună ziua! Cu ce vă pot ajuta?'},
+      {speaker:'user', opts:[
+        {text:'Quiero una habitación, por favor.', ro:'Vreau o cameră, te rog.', correct:true},
+        {text:'Me gusta mucho.', ro:'Îmi place mult.', correct:false},
+        {text:'Tengo sed.', ro:'Mi-e sete.', correct:false},
+      ]},
+      {speaker:'ai', es:'¿Para cuántas noches?', ro:'Pentru câte nopți?'},
+      {speaker:'user', opts:[
+        {text:'Para dos noches, gracias.', ro:'Pentru două nopți, mulțumesc.', correct:true},
+        {text:'No sé.', ro:'Nu știu.', correct:false},
+        {text:'Buenos días.', ro:'Bună dimineața.', correct:false},
+      ]},
+      {speaker:'ai', es:'Muy bien. ¿Su nombre, por favor?', ro:'Foarte bine. Numele dvs., vă rog?'},
+      {speaker:'user', opts:[
+        {text:'Me llamo Ana Popescu.', ro:'Mă numesc Ana Popescu.', correct:true},
+        {text:'Quiero agua.', ro:'Vreau apă.', correct:false},
+        {text:'¿Dónde está?', ro:'Unde este?', correct:false},
+      ]},
+      {speaker:'ai', es:'¡Perfecto! Aquí tiene su llave. ¡Bienvenida!', ro:'Perfect! Poftim cheia. Bine ați venit!'},
+    ]
+  }
+];
+
+let activeConv = 0;
+let convStepIdx = 0;
+
+function initConv() {
+  activeConv = 0; convStepIdx = 0;
+  renderConvMenu();
+}
+
+function renderConvMenu() {
+  const c = document.getElementById('conv-container');
+  c.innerHTML = `<div style="display:grid;gap:10px;margin-bottom:1.5rem">${conversations.map((cv,i) => `<button onclick="startConv(${i})" style="background:var(--surface);border:1.5px solid var(--border);border-radius:12px;padding:14px 18px;color:var(--text);font-family:inherit;font-size:0.95rem;cursor:pointer;text-align:left;transition:all 0.2s" onmouseover="this.style.borderColor='var(--gold)'" onmouseout="this.style.borderColor='var(--border)'">${cv.title}</button>`).join('')}</div>`;
+}
+
+function startConv(idx) {
+  activeConv = idx; convStepIdx = 0;
+  renderConvStep();
+}
+
+function renderConvStep() {
+  const conv = conversations[activeConv];
+  const c = document.getElementById('conv-container');
+  const messagesHTML = conv.steps.slice(0, convStepIdx + 1).map(step => {
+    if (step.speaker === 'ai') {
+      return `<div class="conv-msg"><div class="conv-avatar ai">🤖</div><div class="conv-bubble"><div class="conv-es">${step.es}</div><div class="conv-ro">${step.ro}</div><button style="background:none;border:none;cursor:pointer;color:var(--gold);font-size:0.8rem;margin-top:4px" onclick="speak('${step.es.replace(/'/g,"\\'")}')">🔊 Ascultă</button></div></div>`;
+    } else if (step.speaker === 'user' && convStepIdx > conv.steps.indexOf(step)) {
+      const chosen = step._chosen || step.opts[0];
+      return `<div class="conv-msg user"><div class="conv-avatar usr">😊</div><div class="conv-bubble"><div class="conv-es">${chosen.text}</div><div class="conv-ro">${chosen.ro}</div></div></div>`;
+    }
+    return '';
+  }).join('');
+
+  const currentStep = conv.steps[convStepIdx];
+  let actionsHTML = '';
+  if (currentStep && currentStep.speaker === 'user') {
+    actionsHTML = `<div class="conv-options-wrap">${currentStep.opts.map((o,i) => `<button class="conv-opt" onclick="chooseConvOpt(${i})"><strong>${o.text}</strong><div style="font-size:0.8rem;color:var(--muted);margin-top:2px">${o.ro}</div></button>`).join('')}</div>`;
+  } else if (convStepIdx < conv.steps.length - 1) {
+    actionsHTML = `<button class="next-btn" onclick="convNext()">Continuă →</button>`;
+  } else {
+    actionsHTML = `<div style="text-align:center;padding:1rem"><div style="font-size:2rem">🎉</div><div style="color:var(--gold);font-weight:700;margin:8px 0">Conversație completă!</div><button class="next-btn" onclick="renderConvMenu()">Alege alt dialog</button></div>`;
+    addXP(25);
   }
 
-  statsBar.textContent = `✨ ${count} numere generate • Click pe un număr ca să-l copiezi! ✨`;
+  c.innerHTML = `<div style="margin-bottom:1rem"><button onclick="renderConvMenu()" style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem">← Înapoi</button></div><div class="lesson-card"><div class="lesson-title">${conv.title}</div><div class="conv-box" id="msgs">${messagesHTML}</div>${actionsHTML}</div>`;
 }
 
-generateNumbers();
+function chooseConvOpt(idx) {
+  const conv = conversations[activeConv];
+  const step = conv.steps[convStepIdx];
+  step._chosen = step.opts[idx];
+  if (!step.opts[idx].correct) addXP(2); else addXP(5);
+  convStepIdx++;
+  renderConvStep();
+}
+
+function convNext() {
+  convStepIdx++;
+  renderConvStep();
+}
+
+// ===== PROGRESS =====
+function renderProgress() {
+  const c = document.getElementById('progres-content');
+  const level = xp < 50 ? 'Începător' : xp < 150 ? 'Elementar' : xp < 300 ? 'Pre-intermediar' : 'Intermediar';
+  const nextLevel = xp < 50 ? 50 : xp < 150 ? 150 : xp < 300 ? 300 : 500;
+  const pct = Math.min(100, Math.round((xp / nextLevel) * 100));
+  c.innerHTML = `
+    <div class="lesson-card" style="text-align:center">
+      <div style="font-size:3rem;margin-bottom:8px">⭐</div>
+      <div style="font-family:'Fraunces',serif;font-size:2rem;color:var(--gold)">${xp} XP</div>
+      <div style="color:var(--muted);margin:6px 0">Nivel: <strong style="color:var(--text)">${level}</strong></div>
+      <div style="background:var(--surface2);border-radius:99px;height:12px;margin:1rem 0;overflow:hidden"><div style="background:linear-gradient(90deg,var(--gold),var(--gold2));height:12px;width:${pct}%;border-radius:99px;transition:width 0.5s"></div></div>
+      <div style="font-size:0.82rem;color:var(--muted)">${xp} / ${nextLevel} XP pentru nivelul următor</div>
+    </div>
+    <div class="lesson-card">
+      <div class="lesson-title">🎯 Cum câștigi XP</div>
+      <table class="pron-table">
+        <tr><td>Click card vocabular</td><td style="color:var(--gold)">+1 XP</td></tr>
+        <tr><td>Răspuns corect la test</td><td style="color:var(--gold)">+10 XP</td></tr>
+        <tr><td>Răspuns corect conversație</td><td style="color:var(--gold)">+5 XP</td></tr>
+        <tr><td>Conversație completă</td><td style="color:var(--gold)">+25 XP</td></tr>
+        <tr><td>Test finalizat</td><td style="color:var(--gold)">+5 XP per răspuns corect</td></tr>
+      </table>
+    </div>
+    <div class="lesson-card">
+      <div class="lesson-title">🗺️ Drumul tău spre conversație</div>
+      ${['Alfabetul & Pronunția','Salutări de bază','Numere 1-20','Fraze esențiale','Verbele SER & ESTAR','Test general','Conversație simulată','Conversație fluentă'].map((s,i) => `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)"><div style="width:28px;height:28px;border-radius:50%;background:${xp > i*40 ? 'var(--gold)' : 'var(--surface2)'};display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:${xp > i*40 ? '#000' : 'var(--muted)'}">${xp > i*40 ? '✓' : i+1}</div><span style="font-size:0.9rem;color:${xp > i*40 ? 'var(--text)' : 'var(--muted)'}">${s}</span></div>`).join('')}
+    </div>`;
+}
+
+// ===== INIT =====
+function init() {
+  renderVocab(vocabSaluturi, 'vocab-saluturi');
+  renderVocab(vocabNumere, 'vocab-numere');
+  renderVocab(vocabFraze, 'vocab-fraze');
+  renderVocab(vocabSaluturi, 'voc-sal');
+  renderVocab(vocabNumere, 'voc-num');
+  renderVocab(vocabMancare, 'voc-mancare');
+  renderVocab(vocabFamilie, 'voc-familie');
+  renderVocab(vocabCulori, 'voc-culori');
+  renderVocab(vocabZile, 'voc-zile');
+  renderVocab(pronPractice, 'pron-practice');
+  initQuiz();
+}
+
+init();
 </script>
+</body>
+</html>
